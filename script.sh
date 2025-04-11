@@ -11,8 +11,8 @@ ENV_NAME="$PROJECT_NAME-env"
 read -p "Enter admin username: " ADMIN_USERNAME
 read -p "Enter admin password: " ADMIN_PASSWORD
 echo
-read -p "Enter the port number (default: 5000): " PORT
-PORT=${PORT:-5000}
+read -p "Enter the port number (default: 5050): " PORT
+PORT=${PORT:-5050}
 
 
 sudo systemctl stop "$PROJECT_NAME"
