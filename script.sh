@@ -16,6 +16,7 @@ PORT=${PORT:-5050}
 
 
 sudo systemctl stop "$PROJECT_NAME"
+sudo rm -r "$INSTALL_DIR/templates"
 
 # 2. نصب pyenv اگر موجود نیست
 if ! command -v pyenv &>/dev/null; then

@@ -149,7 +149,7 @@ def renew():
         sn = SanaeiAPI(server["username"], server["password"], server["url"])
         
         wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-        if wallet > 60000:
+        if wallet >= 60000:
         
             d = sn.update_client(int(inbound_id), user_id, username)
             print(d)
@@ -177,7 +177,7 @@ def new():
         sn = SanaeiAPI(server["username"], server["password"], server["url"])
         
         wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-        if wallet > 60000:
+        if wallet >= 60000:
             inbound_id = int(db.get_admins_inbound_id(session["UUID"])["data"]["inbound_id"])
             d = sn.add_client(inbound_id, username)
             if d["status"] ==False:
