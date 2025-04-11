@@ -2,7 +2,7 @@
 
 # تعریف متغیرها
 PROJECT_NAME="GODPanel"
-GITHUB_REPO="https://github.com/parsalakzian/godpanel.git"
+GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
 INSTALL_DIR="/opt/$PROJECT_NAME"
 PYTHON_VERSION="python3"
 PORT=${1:-5000} # پورت از آرگومان اول اسکریپت گرفته می‌شود (پیش‌فرض: 5000)
