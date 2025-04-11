@@ -1,3 +1,4 @@
+import argparse
 import json
 import os
 import shutil
@@ -325,5 +326,10 @@ def upload_backup():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5050))
+    parser = argparse.ArgumentParser(description="Run GODPanel server")
+    parser.add_argument("--port", type=int, help="Port to run the server on")
+    args = parser.parse_args()
+
+    # اولویت: فلگ → متغیر محیطی → مقدار پیش‌فرض
+    port = args.port or int(os.environ.get("PORT", 5050))
     app.run(debug=False, host="0.0.0.0", port=port)
