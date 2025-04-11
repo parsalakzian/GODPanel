@@ -573,7 +573,7 @@
           </div>
 
           <!-- Input Field -->
-          <input type="text" value="${url}" readonly>
+          <input type="text" id="url" value="${url}" readonly>
 
           <!-- Buttons -->
           <button class="copy-btn">Copy</button>
@@ -585,9 +585,11 @@
 
       const copyButton = document.querySelector('.copy-btn');
       const qrButton = document.querySelector('.qr-btn');
-
+      let copyGfGText =
+            document.getElementById("url");
       copyButton.addEventListener('click', () => {
-        navigator.clipboard.writeText(url);
+        copyGfGText.select();
+        document.execCommand("copy");
         alert('Link Copied To ClipBoard');
         modalSection.remove();
       });
