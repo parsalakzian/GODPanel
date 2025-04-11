@@ -1,76 +1,57 @@
 #!/bin/bash
 
-# تعریف متغیرها
 PROJECT_NAME="GODPanel"
 GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
 INSTALL_DIR="/opt/$PROJECT_NAME"
-PYTHON_VERSION="python3"
+PYTHON_VERSION="3.12.8"
+PYTHON_BIN="/usr/local/bin/python3.12"
 ADMIN_FILE="$INSTALL_DIR/admin.json"
 
 # 1. دریافت اطلاعات از کاربر
 read -p "Enter admin username: " ADMIN_USERNAME
 read -s -p "Enter admin password: " ADMIN_PASSWORD
-echo # برای ایجاد خط جدید بعد از ورودی رمز عبور
+echo
 read -p "Enter the port number (default: 5000): " PORT
-PORT=${PORT:-5000} # اگر کاربر پورت وارد نکرد، پیش‌فرض 5000 استفاده می‌شود
+PORT=${PORT:-5000}
 
-# 2. بررسی و نصب پایتون
-echo "Checking for Python..."
-if ! command -v $PYTHON_VERSION &> /dev/null; then
-    echo "Python not found. Installing Python..."
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        if [[ "$ID" == "ubuntu" || "$ID" == "debian" ]]; then
-            sudo apt update
-            sudo apt install -y python3 python3-pip python3-venv
-        elif [[ "$ID" == "centos" || "$ID" == "rhel" ]]; then
-            sudo yum install -y python3 python3-pip python3-virtualenv
-        else
-            echo "Unsupported Linux distribution. Please install Python manually."
-            exit 1
-        fi
-    else
-        echo "Could not detect Linux distribution. Please install Python manually."
-        exit 1
-    fi
+# 2. نصب Python 3.12.8 اگر موجود نباشد
+echo "Checking for Python $PYTHON_VERSION..."
+if [ ! -f "$PYTHON_BIN" ]; then
+    echo "Python $PYTHON_VERSION not found. Installing..."
+    sudo apt update
+    sudo apt install -y wget build-essential zlib1g-dev libncurses5-dev \
+        libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev
+
+    cd /tmp
+    wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
+    tar -xf Python-$PYTHON_VERSION.tgz
+    cd Python-$PYTHON_VERSION
+    ./configure --enable-optimizations
+    make -j$(nproc)
+    sudo make altinstall
+else
+    echo "Python $PYTHON_VERSION is already installed."
 fi
-echo "Python is installed."
 
 # 3. بررسی و نصب Git
 echo "Checking for Git..."
 if ! command -v git &> /dev/null; then
-    echo "Git not found. Installing Git..."
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        if [[ "$ID" == "ubuntu" || "$ID" == "debian" ]]; then
-            sudo apt update
-            sudo apt install -y git
-        elif [[ "$ID" == "centos" || "$ID" == "rhel" ]]; then
-            sudo yum install -y git
-        else
-            echo "Unsupported Linux distribution. Please install Git manually."
-            exit 1
-        fi
-    else
-        echo "Could not detect Linux distribution. Please install Git manually."
-        exit 1
-    fi
+    echo "Git not found. Installing..."
+    sudo apt install -y git
 fi
-echo "Git is installed."
 
-# 4. کلون کردن پروژه از GitHub
+# 4. کلون پروژه
 echo "Cloning the project from GitHub..."
 if [ -d "$INSTALL_DIR" ]; then
-    echo "Project directory already exists. Updating the project..."
+    echo "Project directory already exists. Updating..."
     cd "$INSTALL_DIR"
     git pull origin main
 else
     git clone "$GITHUB_REPO" "$INSTALL_DIR"
     cd "$INSTALL_DIR"
 fi
-echo "Project cloned successfully."
 
-# 5. ایجاد فایل admin.json و ذخیره اطلاعات مدیر
+# 5. ذخیره admin.json
 echo "Creating admin.json file..."
 cat <<EOF > "$ADMIN_FILE"
 {
@@ -78,24 +59,19 @@ cat <<EOF > "$ADMIN_FILE"
   "password": "$ADMIN_PASSWORD"
 }
 EOF
-echo "Admin credentials saved to $ADMIN_FILE."
 
-# 6. ایجاد محیط مجازی و نصب وابستگی‌ها
-echo "Setting up virtual environment and installing dependencies..."
-if [ ! -d "venv" ]; then
-    $PYTHON_VERSION -m venv venv
-fi
+# 6. ساخت محیط مجازی با Python 3.12.8
+echo "Creating virtual environment..."
+$PYTHON_BIN -m venv venv
 source venv/bin/activate
-
 pip install --upgrade pip
 pip install -r requirements.txt
-echo "Dependencies installed."
 
-# 7. ایجاد فایل سرویس systemd
+# 7. ساخت systemd service
 SERVICE_NAME="$PROJECT_NAME.service"
 SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME"
 
-echo "Creating systemd service file..."
+echo "Creating systemd service..."
 sudo tee "$SERVICE_FILE" > /dev/null <<EOF
 [Unit]
 Description=$PROJECT_NAME
@@ -104,18 +80,18 @@ After=network.target
 [Service]
 User=$(whoami)
 WorkingDirectory=$INSTALL_DIR
-ExecStart=$INSTALL_DIR/venv/bin/$PYTHON_VERSION app.py --port=$PORT
+ExecStart=$INSTALL_DIR/venv/bin/python app.py --port=$PORT
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# 8. راه‌اندازی سرویس
+# 8. فعال‌سازی سرویس
 echo "Enabling and starting the service..."
 sudo systemctl daemon-reload
 sudo systemctl enable "$SERVICE_NAME"
 sudo systemctl start "$SERVICE_NAME"
 
-echo "The project is now running on port $PORT."
-echo "You can check the status of the service with: sudo systemctl status $SERVICE_NAME"
+echo "✅ The project is now running on port $PORT."
+echo "📋 Check status: sudo systemctl status $SERVICE_NAME"
