@@ -324,5 +324,6 @@ def upload_backup():
             return render_template("login.html")
 
 
-if(__name__ == "__main__"): 
-    app.run(debug=False, host="0.0.0.0", port=5050) 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5050))
+    app.run(debug=False, host="0.0.0.0", port=port)

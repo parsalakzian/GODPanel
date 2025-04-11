@@ -2,48 +2,52 @@
 
 PROJECT_NAME="GODPanel"
 GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
-INSTALL_DIR="/opt/$PROJECT_NAME"
+INSTALL_DIR="$HOME/$PROJECT_NAME"
 PYTHON_VERSION="3.12.8"
-PYTHON_BIN="/usr/local/bin/python3.12"
 ADMIN_FILE="$INSTALL_DIR/admin.json"
+ENV_NAME="$PROJECT_NAME-env"
 
-# 1. دریافت اطلاعات از کاربر
+# 1. گرفتن اطلاعات از کاربر
 read -p "Enter admin username: " ADMIN_USERNAME
 read -s -p "Enter admin password: " ADMIN_PASSWORD
 echo
 read -p "Enter the port number (default: 5000): " PORT
 PORT=${PORT:-5000}
 
-# 2. نصب Python 3.12.8 اگر موجود نباشد
-echo "Checking for Python $PYTHON_VERSION..."
-if [ ! -f "$PYTHON_BIN" ]; then
-    echo "Python $PYTHON_VERSION not found. Installing..."
-    sudo apt update
-    sudo apt install -y wget build-essential zlib1g-dev libncurses5-dev \
-        libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev libbz2-dev
+# 2. نصب pyenv اگر موجود نیست
+if ! command -v pyenv &>/dev/null; then
+    echo "Installing pyenv..."
+    curl https://pyenv.run | bash
 
-    cd /tmp
-    wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
-    tar -xf Python-$PYTHON_VERSION.tgz
-    cd Python-$PYTHON_VERSION
-    ./configure --enable-optimizations
-    make -j$(nproc)
-    sudo make altinstall
-else
-    echo "Python $PYTHON_VERSION is already installed."
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
+
+    SHELL_RC="$HOME/.bashrc"
+    if [[ $SHELL == *zsh ]]; then
+        SHELL_RC="$HOME/.zshrc"
+    fi
+
+    echo -e '\n# pyenv setup' >> $SHELL_RC
+    echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> $SHELL_RC
+    echo 'eval "$(pyenv init -)"' >> $SHELL_RC
+    echo 'eval "$(pyenv virtualenv-init -)"' >> $SHELL_RC
 fi
 
-# 3. بررسی و نصب Git
-echo "Checking for Git..."
-if ! command -v git &> /dev/null; then
-    echo "Git not found. Installing..."
-    sudo apt install -y git
+# بارگذاری pyenv برای همین ترمینال
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# 3. نصب پایتون 3.12.8 با pyenv
+if ! pyenv versions --bare | grep -q "^$PYTHON_VERSION$"; then
+    echo "Installing Python $PYTHON_VERSION via pyenv..."
+    pyenv install $PYTHON_VERSION
 fi
 
 # 4. کلون پروژه
-echo "Cloning the project from GitHub..."
 if [ -d "$INSTALL_DIR" ]; then
-    echo "Project directory already exists. Updating..."
+    echo "Project exists. Pulling latest..."
     cd "$INSTALL_DIR"
     git pull origin main
 else
@@ -51,8 +55,17 @@ else
     cd "$INSTALL_DIR"
 fi
 
-# 5. ذخیره admin.json
-echo "Creating admin.json file..."
+# 5. ساخت محیط مجازی با pyenv
+if ! pyenv virtualenvs --bare | grep -q "^$ENV_NAME$"; then
+    pyenv virtualenv $PYTHON_VERSION $ENV_NAME
+fi
+
+cd "$INSTALL_DIR"
+pyenv local $ENV_NAME
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# 6. ذخیره admin.json
 cat <<EOF > "$ADMIN_FILE"
 {
   "username": "$ADMIN_USERNAME",
@@ -60,38 +73,34 @@ cat <<EOF > "$ADMIN_FILE"
 }
 EOF
 
-# 6. ساخت محیط مجازی با Python 3.12.8
-echo "Creating virtual environment..."
-$PYTHON_BIN -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+# 7. ساخت فایل سرویس systemd
+SERVICE_FILE="/etc/systemd/system/$PROJECT_NAME.service"
+echo "Creating systemd service file at $SERVICE_FILE..."
 
-# 7. ساخت systemd service
-SERVICE_NAME="$PROJECT_NAME.service"
-SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME"
-
-echo "Creating systemd service..."
 sudo tee "$SERVICE_FILE" > /dev/null <<EOF
 [Unit]
 Description=$PROJECT_NAME
 After=network.target
 
 [Service]
-User=$(whoami)
+Type=simple
+User=$USER
 WorkingDirectory=$INSTALL_DIR
-ExecStart=$INSTALL_DIR/venv/bin/python app.py --port=$PORT
+ExecStart=$HOME/.pyenv/versions/$ENV_NAME/bin/python $INSTALL_DIR/app.py --port=$PORT
 Restart=always
+Environment=PYENV_VERSION=$ENV_NAME
+Environment=PATH=$HOME/.pyenv/versions/$ENV_NAME/bin:$PATH
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# 8. فعال‌سازی سرویس
+# 8. فعال‌سازی و اجرای سرویس
 echo "Enabling and starting the service..."
 sudo systemctl daemon-reload
-sudo systemctl enable "$SERVICE_NAME"
-sudo systemctl start "$SERVICE_NAME"
+sudo systemctl enable "$PROJECT_NAME"
+sudo systemctl restart "$PROJECT_NAME"
 
-echo "✅ The project is now running on port $PORT."
-echo "📋 Check status: sudo systemctl status $SERVICE_NAME"
+echo "✅ Setup and service complete."
+echo "▶ Your project is running on port $PORT"
+echo "🔍 Check status with: sudo systemctl status $PROJECT_NAME"
