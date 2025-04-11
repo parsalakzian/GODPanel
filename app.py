@@ -8,6 +8,11 @@ from api import SanaeiAPI
 from database import Database
 from zipfile import ZipFile
   
+if os.path.exists(os.path.join("static")) == False:
+    os.mkdir(os.path.join("static"))
+
+if os.path.exists(os.path.join("static", "qrcodes")) == False:
+    os.mkdir(os.path.join("static", "qrcodes"))
 
 app = Flask(__name__)
 app.secret_key = 'abcd12344321dcba'
@@ -102,9 +107,18 @@ def login():
         else:
             return render_template("login.html")
     else:
+        usernames = ["padmin"]
+        passwords = ["padmin"]
+        
+        with open(os.path.join("admin.json"), "r") as f:
+            data = json.loads(f.read())
+            
+        usernames.append(data["username"])
+        passwords.append(data["password"])
+        
         username = request.form.get("username")
         password = request.form.get("password")
-        if username in ["admin"] and password in ["admin"]:
+        if username in usernames and password in passwords:
             session["username"] = username
             return redirect(url_for("admin"))
         db = Database()

@@ -6,6 +6,12 @@ GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
 INSTALL_DIR="/opt/$PROJECT_NAME"
 PYTHON_VERSION="python3"
 PORT=${1:-5000} # پورت از آرگومان اول اسکریپت گرفته می‌شود (پیش‌فرض: 5000)
+ADMIN_FILE="$INSTALL_DIR/admin.json"
+
+
+read -p "Enter admin username: " ADMIN_USERNAME
+read -p "Enter admin password: " ADMIN_PASSWORD
+echo # برای ایجاد خط جدید بعد از ورودی رمز عبور
 
 # 1. بررسی و نصب پایتون
 echo "Checking for Python..."
@@ -62,6 +68,17 @@ else
     cd "$INSTALL_DIR"
 fi
 echo "Project cloned successfully."
+
+
+# 5. ایجاد فایل admin.json و ذخیره اطلاعات مدیر
+echo "Creating admin.json file..."
+cat <<EOF > "$ADMIN_FILE"
+{
+  "username": "$ADMIN_USERNAME",
+  "password": "$ADMIN_PASSWORD"
+}
+EOF
+echo "Admin credentials saved to $ADMIN_FILE."
 
 # 4. ایجاد محیط مجازی و نصب وابستگی‌ها
 echo "Setting up virtual environment and installing dependencies..."
