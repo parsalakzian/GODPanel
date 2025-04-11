@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jura&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Jura', Helvetica, sans-serif;
+    }
+
+    body {
+      background-color: #2c3e60;
+      color: white;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .left-panel, .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .left-panel {
+      flex: 3;
+    }
+
+    .right-panel {
+      flex: 1;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header img {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+    }
+
+    .wallet {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: #415c88;
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+
+    .wallet img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .section {
+      background: linear-gradient(to bottom, #6a91e2, #1ea56c);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .news-box {
+      height: 100px;
+      background: linear-gradient(to bottom, #6a91e2, #1ea56c);
+      padding: 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .totals {
+      height: 60px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+
+    .total { background: #2ecc71; }
+    .online { background: #3498db; }
+    .expired { background: #e74c3c; }
+
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .user-header .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user-header .actions img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #3b4c74;
+      padding: 8px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .search input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: white;
+    }
+
+    .search img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .user-list {
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .server-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #304471;
+      padding: 10px;
+      border-radius: 15px;
+    }
+
+    .server-item span.status {
+      font-size: 12px;
+      padding: 3px 6px;
+      border-radius: 10px;
+      background: #555;
+      margin-right: 5px;
+    }
+
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #304471;
+      padding: 10px;
+      border-radius: 15px;
+    }
+
+    .user-item span.status {
+      font-size: 12px;
+      padding: 3px 6px;
+      border-radius: 10px;
+      background: #555;
+      margin-right: 5px;
+    }
+
+    .status.online {
+      background: #2ecc71;
+    }
+
+    .status.offline {
+      background: #c0392b;
+    }
+
+    .server-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .server-actions span {
+      padding: 3px 6px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .server-actions .green {
+      background: #2ecc71;
+    }
+
+    .server-actions .red {
+      background: #e74c3c;
+    }
+
+    .server-actions img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-actions span {
+      padding: 3px 6px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .user-actions .green {
+      background: #2ecc71;
+    }
+
+    .user-actions .red {
+      background: #e74c3c;
+    }
+
+    .user-actions img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      .user-list {
+        height: 300px;
+      }
+    }
+  </style>
+<style>
+  .new_pop {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.719);
+  }
+  .login-container {
+      background: linear-gradient(to top, #6a91e2, #1ea56c);
+      padding: 20px;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .header-pop {
+      justify-content: center;
+      margin-bottom: 15px;
+      display: flex;
+  }
+  
+  .header-pop .title {
+      background-color: #2f365f;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: 500;
+  }
+  
+  .form-group {
+      margin-bottom: 15px;
+  }
+  
+  label {
+      display: block;
+      color: white;
+      margin-bottom: 5px;
+  }
+  
+  input {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      background-color: #d1d1d1;
+      box-sizing: border-box;
+  }
+  
+  textarea {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      background-color: #d1d1d1;
+      box-sizing: border-box;
+  }
+  
+  select {
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      background-color: #d1d1d1;
+      box-sizing: border-box;
+  }
+  
+  .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+  }
+  
+  .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-family: "Jura", Helvetica, sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+  }
+  
+  .btn-no {
+      background-color: #ff0000;
+  }
+  
+  .btn-ok {
+      background-color: #2ecc71;
+  }
+</style>
+<style>
+  .upload-icon {
+    font-size: 50px;
+    color: #007bff;
+    cursor: pointer;
+    display: inline;
+  }
+  input[type="file"] {
+    display: none; /* مخفی کردن فیلد انتخاب فایل */
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="right-panel">
+      <div class="header">
+        <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/logout-icon@2x.png" alt="Logout" onclick="window.open('/logout', '_self')">
+        <div>
+          <label for="hiddenFileInput" class="upload-icon">
+            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f8e4d50a551ff812c6d460/img/---icon--cloud-upload-@2x.png" alt="Backup">
+          </label>
+        
+          <!-- فیلد انتخاب فایل (مخفی) -->
+          <input type="file" id="hiddenFileInput" />
+          
+          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f8e4d50a551ff812c6d460/img/---icon--download-circled-outline-@2x.png" alt="Backup" onclick="window.open('/download_backup', '_self')">
+        </div>
+      </div>
+      <div class="section">
+        <div class="user-header">
+          <div class="section-title">News</div> 
+          
+          <div class="actions">
+            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/plus-icon@2x.png" alt="New News" onclick="new_news('/new_news')">
+          </div>
+        </div>
+        <div class="news-box">{{data.new}}</div>
+      </div>
+      <div class="section">
+        <div class="section-title">Settings</div>
+        <div class="totals">
+          <div class="server-item">
+            <span class="server_name">Server</span>
+            <div class="server-actions">
+              <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3c213c79d4573ff5eb7fb/img/---icon--add-database-script-@2x.png" alt="Renew" onclick="set_server('/set_server')">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="left-panel">
+      <div class="section">
+        <div class="user-header">
+          <div class="section-title">Admins</div>
+          <div style="padding-right: 10px;" class="actions">
+            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/plus-icon@2x.png" alt="New" onclick="new_pop(`{{data.inbounds}}`, '/new_admin')">
+          </div>
+        </div>
+        <div class="search">
+          <input id="searchInput" type="text" placeholder="Search" oninput="filterUsers()">
+          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/search-icon@2x.png" alt="Search">
+        </div>
+        
+        <div class="user-list">
+          {% for admin in data["admins"] %}
+            <div class="user-item">
+              <span class="user_name">{{admin["username"]}} | {{admin["password"]}} | {{admin.inbound}}</span>
+              <div class="user-actions">
+                
+                {% if admin["int_wallet"] > 59999 %}
+                  <span class="green">{{admin["wallet"]}}T</span>
+                {% else %}
+                  <span class="red">{{admin["wallet"]}}T</span>
+                {% endif %}
+                  <span class="green">{{admin["total"]}}</span>
+                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3c213c79d4573ff5eb7fb/img/---icon--add-database-script-@2x.png" alt="add price" onclick="add_admin_wallet('{{admin.admin_id}}', '/add_admin_wallet')">
+              </div>
+            </div>
+          {% endfor %} 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterUsers() {
+      // گرفتن مقدار ورودی از فیلد جست‌وجو
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    
+      // گرفتن تمام آیتم‌های لیست کاربران
+      const users = document.getElementsByClassName('user-item');
+    
+      // حلقه برای بررسی هر کاربر
+      for (let i = 0; i < users.length; i++) {
+        const username = users[i].getElementsByClassName("user_name")[0].textContent.toLowerCase();
+    
+        // بررسی تطابق نام کاربری با مقدار ورودی
+        if (username.includes(searchInput)) {
+          users[i].style.display = ''; // نمایش کاربر
+        } else {
+          users[i].style.display = 'none'; // مخفی کردن کاربر
+        }
+      }
+    }
+  </script>
+
+
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function new_pop(inboundss, url) {
+      const modalSection = document.createElement('section');
+      modalSection.className = 'new_pop';
+      var inbounds = JSON.parse(inboundss)
+      var text = ""
+
+      for (let i = 0; i < inbounds.length; i++){
+        text += `<option value='${inbounds[i]["id"]}'>${inbounds[i]["remark"]}</option>`
+      }
+    
+      modalSection.innerHTML = `
+        <div class="login-container">
+            <div class="header-pop">
+                <div class="title">New Admin</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="password">
+            </div>
+            
+            <div class="form-group">
+                <label for="inbound">Inbound:</label>
+                
+                <select name="inbounds" id="inbounds">
+                  
+            `+text
+            +`
+                </select>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-no">NO</button>
+                <button class="btn btn-ok">OK</button>
+            </div>
+        </div>
+      `;
+    
+      document.body.appendChild(modalSection);
+
+      const noButton = document.querySelector('.btn-no');
+      const okButton = document.querySelector('.btn-ok');
+      const selects = document.getElementById("inbounds");
+
+      noButton.addEventListener('click', () => {
+        modalSection.remove();
+      });
+
+      okButton.addEventListener('click', () => {
+        const data = JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          inbound_id: selects.value
+        });
+
+        console.log(data)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Success:', JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true){
+              window.open("/", "_self")
+              modalSection.remove();
+            }
+            else{
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error('Error:', xhr.statusText);
+            alert('An error occurred while submitting data.');
+          }
+        };
+
+        xhr.send(data);
+        
+      });
+    }
+  </script>
+
+
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function new_news(url) {
+      const modalSection = document.createElement('section');
+      modalSection.className = 'new_pop';
+    
+      modalSection.innerHTML = `
+        <div class="login-container">
+            <div class="header-pop">
+                <div class="title">New News</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="new">New:</label>
+                <textarea rows="3" cols="60" id="new" name="new"></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-no">NO</button>
+                <button class="btn btn-ok">OK</button>
+            </div>
+        </div>
+      `;
+    
+      document.body.appendChild(modalSection);
+
+      const noButton = document.querySelector('.btn-no');
+      const okButton = document.querySelector('.btn-ok');
+
+      noButton.addEventListener('click', () => {
+        modalSection.remove();
+      });
+
+      okButton.addEventListener('click', () => {
+        const data = JSON.stringify({
+          new: document.getElementById("new").value,
+        });
+
+        console.log(data)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Success:', JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true){
+              window.open("/", "_self")
+              modalSection.remove();
+            }
+            else{
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error('Error:', xhr.statusText);
+            alert('An error occurred while submitting data.');
+          }
+        };
+
+        xhr.send(data);
+        
+      });
+    }
+  </script>
+
+
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function add_admin_wallet(admin_id, url) {
+      const modalSection = document.createElement('section');
+      modalSection.className = 'new_pop';
+    
+      modalSection.innerHTML = `
+        <div class="login-container">
+            <div class="header-pop">
+                <div class="title">Add price to Admin's Wallet</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">price:</label>
+                <input type="number" id="price" name="price">
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-no">NO</button>
+                <button class="btn btn-ok">OK</button>
+            </div>
+        </div>
+      `;
+    
+      document.body.appendChild(modalSection);
+
+      const noButton = document.querySelector('.btn-no');
+      const okButton = document.querySelector('.btn-ok');
+
+      noButton.addEventListener('click', () => {
+        modalSection.remove();
+      });
+
+      okButton.addEventListener('click', () => {
+        const data = JSON.stringify({
+          price: document.getElementById("price").value,
+          admin_id: admin_id
+        });
+
+        console.log(data)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Success:', JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true){
+              window.open("/", "_self")
+              modalSection.remove();
+            }
+            else{
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error('Error:', xhr.statusText);
+            alert('An error occurred while submitting data.');
+          }
+        };
+
+        xhr.send(data);
+        
+      });
+    }
+  </script>
+  
+
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function set_server(url) {
+      const modalSection = document.createElement('section');
+      modalSection.className = 'new_pop';
+    
+      modalSection.innerHTML = `
+        <div class="login-container">
+            <div class="header-pop">
+                <div class="title">Set Server</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="text" id="password" name="password">
+            </div>
+            
+            <div class="form-group">
+                <label for="url">URL:</label>
+                <input type="text" id="url" name="url">
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-no">NO</button>
+                <button class="btn btn-ok">OK</button>
+            </div>
+        </div>
+      `;
+    
+      document.body.appendChild(modalSection);
+
+      const noButton = document.querySelector('.btn-no');
+      const okButton = document.querySelector('.btn-ok');
+      const selects = document.getElementById("inbounds");
+
+      noButton.addEventListener('click', () => {
+        modalSection.remove();
+      });
+
+      okButton.addEventListener('click', () => {
+        const data = JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+          url: document.getElementById("url").value
+        });
+
+        console.log(data)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Success:', JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true){
+              window.open("/", "_self")
+              modalSection.remove();
+            }
+            else{
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error('Error:', xhr.statusText);
+            alert('An error occurred while submitting data.');
+          }
+        };
+
+        xhr.send(data);
+        
+      });
+    }
+  </script>
+  <script>
+    document.getElementById('hiddenFileInput').addEventListener('change', (event) => {
+      const file = event.target.files[0]; // گرفتن فایل انتخاب‌شده
+    
+      if (!file) {
+        alert('No file selected!');
+        return;
+      }
+    
+      // ایجاد FormData برای ارسال فایل
+      const formData = new FormData();
+      formData.append('file', file);
+    
+      // ارسال فایل به Flask با Fetch API
+      fetch('/upload_backup', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        if (data["status"] === true){
+          alert('File uploaded successfully!');
+          window.open("/", "_self")
+        }else{
+          alert(data["error"]);
+        }
+        
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while uploading the file.');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to GOD</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a202c; /* Dark blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: linear-gradient(to bottom, #4567b8, #2d3e50); /* Gradient background */
+            border-radius: 10px;
+            padding: 20px 30px; /* Top/Bottom: 20px, Left/Right: 30px */
+            width: 300px; /* Container width */
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-container h1 {
+            color: white;
+            font-size: 2em; /* Title size */
+            margin-bottom: 20px; /* Space between title and inputs */
+        }
+
+        form label {
+            color: #ffffff;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        form input {
+            width: 100%;
+            padding: 10px; /* Input padding */
+            margin-bottom: 15px; /* Space between inputs */
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+            color: white;
+            font-size: 16px;
+            height: 40px; /* Fixed height for inputs */
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px; /* Button padding */
+            background-color: #2ecc71; /* Green button */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            height: 40px; /* Fixed height for button */
+        }
+
+        form button:hover {
+            background-color: #27ae60; /* Slightly darker green on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .login-container {
+                width: 90%; /* Adjust width for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>GOD</h1>
+        <form action="#" method="post">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" >
+            {% if message %}
+                <label style="color: red; text-align: center;">{{message}}</label>
+            {% endif %} 
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>
