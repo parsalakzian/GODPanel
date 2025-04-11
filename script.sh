@@ -9,10 +9,13 @@ ENV_NAME="$PROJECT_NAME-env"
 
 # 1. گرفتن اطلاعات از کاربر
 read -p "Enter admin username: " ADMIN_USERNAME
-read -s -p "Enter admin password: " ADMIN_PASSWORD
+read -p "Enter admin password: " ADMIN_PASSWORD
 echo
 read -p "Enter the port number (default: 5000): " PORT
 PORT=${PORT:-5000}
+
+
+sudo systemctl stop "$PROJECT_NAME"
 
 # 2. نصب pyenv اگر موجود نیست
 if ! command -v pyenv &>/dev/null; then
@@ -90,6 +93,7 @@ ExecStart=$HOME/.pyenv/versions/$ENV_NAME/bin/python $INSTALL_DIR/app.py --port=
 Restart=always
 Environment=PYENV_VERSION=$ENV_NAME
 Environment=PATH=$HOME/.pyenv/versions/$ENV_NAME/bin:$PATH
+Environment=PORT=$PORT
 
 [Install]
 WantedBy=multi-user.target
