@@ -2,7 +2,7 @@
 
 PROJECT_NAME="GODPanel"
 GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
-INSTALL_DIR="$HOME/$PROJECT_NAME"
+INSTALL_DIR="/usr/local/bin/$PROJECT_NAME"
 PYTHON_VERSION="3.12.8"
 ADMIN_FILE="$INSTALL_DIR/admin.json"
 ENV_NAME="$PROJECT_NAME-env"
