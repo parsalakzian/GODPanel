@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 PROJECT_NAME="GODPanel"
 GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
 INSTALL_DIR="/root/$PROJECT_NAME"
@@ -8,82 +10,96 @@ ENV_NAME="$PROJECT_NAME-env"
 ADMIN_FILE="$INSTALL_DIR/admin.json"
 SERVICE_FILE="/etc/systemd/system/$PROJECT_NAME.service"
 
-# 1. گرفتن اطلاعات از کاربر
+# گرفتن اطلاعات از کاربر (همیشه)
 read -p "Enter admin username: " ADMIN_USERNAME
 read -s -p "Enter admin password: " ADMIN_PASSWORD
 echo
 read -p "Enter the port number (default: 5050): " PORT
 PORT=${PORT:-5050}
 
-# 2. نصب pyenv اگر نصب نیست
+# نصب pyenv در صورت نیاز
 if ! command -v pyenv &>/dev/null; then
     echo "Installing pyenv..."
     curl https://pyenv.run | bash
 
-    echo 'export PATH="/root/.pyenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+    echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(pyenv init --path)"' >> ~/.bashrc
     echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv virtualenv-init -)"
+else
+    export PATH="$HOME/.pyenv/bin:$PATH"
+    eval "$(pyenv init --path)"
+    eval "$(pyenv virtualenv-init -)"
 fi
 
-# بارگذاری pyenv در همین ترمینال
-export PATH="/root/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# 3. نصب پایتون موردنظر با pyenv
+# نصب نسخه پایتون
 if ! pyenv versions --bare | grep -q "^$PYTHON_VERSION$"; then
     pyenv install $PYTHON_VERSION
 fi
 
-# 4. کلون پروژه
-if [ -d "$INSTALL_DIR" ]; then
-    echo "Project exists. Pulling latest..."
-    cd "$INSTALL_DIR"
-    git pull origin main
-else
-    git clone "$GITHUB_REPO" "$INSTALL_DIR"
-    cd "$INSTALL_DIR"
-fi
-
-# 5. ساخت محیط مجازی
+# ساخت یا اطمینان از محیط مجازی
 if ! pyenv virtualenvs --bare | grep -q "^$ENV_NAME$"; then
     pyenv virtualenv $PYTHON_VERSION $ENV_NAME
 fi
 
+# توقف سرویس اگر وجود دارد
+if systemctl list-units --full -all | grep -q "$PROJECT_NAME.service"; then
+    echo "Stopping existing service..."
+    systemctl stop "$PROJECT_NAME.service"
+fi
+
+# کلون یا آپدیت پروژه
+if [ -d "$INSTALL_DIR" ]; then
+    echo "Updating project..."
+    cd "$INSTALL_DIR"
+    git pull origin main
+else
+    echo "Cloning project..."
+    git clone "$GITHUB_REPO" "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
+fi
+
+# فعال‌سازی محیط و نصب وابستگی‌ها
+cd "$INSTALL_DIR"
 pyenv local $ENV_NAME
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# 6. ذخیره admin.json
+# بروزرسانی admin.json
 cat <<EOF > "$ADMIN_FILE"
 {
   "username": "$ADMIN_USERNAME",
-  "password": "$ADMIN_PASSWORD"
+  "password": "$ADMIN_PASSWORD",
+  "port": $PORT
 }
 EOF
 
-# 7. ساخت فایل سرویس systemd
+# ساختن فایل systemd
+echo "Creating systemd service..."
 cat <<EOF > "$SERVICE_FILE"
 [Unit]
-Description=GODPanel
+Description=$PROJECT_NAME
 After=network.target
 
 [Service]
 Type=simple
 User=root
 WorkingDirectory=$INSTALL_DIR
-ExecStart=/bin/bash -c 'export PATH="/root/.pyenv/bin:\$PATH"; eval "\$(pyenv init -)"; eval "\$(pyenv virtualenv-init -)"; pyenv activate $ENV_NAME; python app.py --port=$PORT'
+ExecStart=/root/.pyenv/versions/$ENV_NAME/bin/python app.py --port=$PORT
 Restart=always
+Environment=PORT=$PORT
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# 8. فعال‌سازی سرویس
+# فعال‌سازی سرویس
 systemctl daemon-reexec
 systemctl daemon-reload
-systemctl enable $PROJECT_NAME.service
-systemctl restart $PROJECT_NAME.service
+systemctl enable "$PROJECT_NAME.service"
+systemctl start "$PROJECT_NAME.service"
 
-echo "✅ GODPanel نصب و اجرا شد. برای مشاهده وضعیت:"
-echo "  systemctl status $PROJECT_NAME.service"
+echo "✅ $PROJECT_NAME is now running on port $PORT."
