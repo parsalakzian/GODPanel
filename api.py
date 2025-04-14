@@ -93,7 +93,7 @@ class SanaeiAPI():
             self.login()
             return self.get_client_traffic()
         
-    def add_client(self, inbound_id, username, traffic= 64424509440, doration= int(time.time())*1000 + 2592000000):
+    def add_client(self, inbound_id, username, traffic= 64424509440, doration= int(-2592000000):
         uid = str(uuid.uuid1())
         settings = "{\"clients\": [{\"id\": \""+uid+"\",\"flow\": \"\",\"email\": \""+username+"\",\"limitIp\": 0,\"totalGB\": "+str(traffic)+",\"expiryTime\": "+str(doration)+",\"enable\": true,\"tgId\": \"\",\"subId\": \"\",\"reset\": 0}]}"
         data = requests.post(
@@ -180,7 +180,7 @@ class SanaeiAPI():
         # Your Remark
         inboundSetting = json.loads(stream)
     
-        remark = f"{email}"
+        remark = f"GOD {email}"
 
         path = None
         host = "none"
