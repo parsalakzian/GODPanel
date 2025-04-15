@@ -42,18 +42,21 @@ def index():
         configs = db.get_admins_configs(session.get("UUID"))["data"]
         
         for config in configs:
+            if sn.get_client_traffic(config["username"]).get("expirytime") > 0:
+                traff = int((sn.get_client_traffic(config["username"]).get("expirytime") - int(time.time()) * 1000)/1000/60/60/24)
+            else:
+                traff = - int((sn.get_client_traffic(config["username"]).get("expirytime"))/1000/60/60/24)
             d.append({
                 "id":config["id"],
                 "username":config["username"],
                 "inbound_id":config["inbound_id"],
-                "config_url":config["config_url"],
                 "status":"Online" if config["username"] in onlines else "Offline",
                 "traffic":int(sn.get_client_traffic(config["username"]).get("traffic")/1024/1024/1024),
-                "doration":int((sn.get_client_traffic(config["username"]).get("expirytime") - int(time.time()) * 1000)/1000/60/60/24) ,
+                "doration":traff ,
             })
             if config["username"] in onlines:
                 online += 1
-            if sn.get_client_traffic(config["username"]).get("expirytime") < int(time.time()) * 1000:
+            if sn.get_client_traffic(config["username"]).get("expirytime") < int(time.time()) * 1000 and sn.get_client_traffic(config["username"]).get("expirytime") > 0:
                 expiryes += 1
         
         data = {"admin_id": session.get("UUID"), "username": session.get("username"), "configs": d, "total": len(d), "online": online, "expired": expiryes, "new": db.get_new().get("data")["new"], "wallet": f"{db.get_admins_wallet(session["UUID"]).get("data")["wallet"]:,}", "next_user":f"{session["username"]}{len(d)+1}"}
@@ -183,11 +186,7 @@ def new():
             if d["status"] ==False:
                 return {"status":False, "error":d["error"]}
             
-            config_url = sn.get_config(inbound_id, d["id"], username)
-            
-            sn.create_qrcode(d["id"], config_url)
-            
-            dd = db.add_config(d["id"], username, inbound_id, config_url, session["UUID"])
+            dd = db.add_config(d["id"], username, inbound_id, session["UUID"])
             if dd["status"] ==False:
                 return {"status":False, "error":dd["error"]}
             
@@ -286,6 +285,30 @@ def set_server():
             return {"status":True}
         else:
             return da
+        
+@app.route('/get_config', methods=['GET', 'POST']) 
+def get_config(): 
+    if request.method == "GET":
+        if "UUID" in session:
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html")
+    else:
+        if "UUID" in session:
+            data = json.loads(request.get_data())
+            config_id = data.get("config_id")
+            inbound_id = data.get("inbound_id")
+            username = data.get("username")
+            
+            db = Database()
+            server = db.get_servers()["data"][0]
+            sn = SanaeiAPI(server["username"], server["password"], server["url"])
+            url = sn.get_config(inbound_id, config_id, username)
+            sn.create_qrcode(config_id, url)
+            return {"status":True, "data":{"config_url":url}}
+        else:
+            return render_template("login.html")
+        
         
 @app.route('/logout') 
 def logout(): 

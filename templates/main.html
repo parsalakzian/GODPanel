@@ -430,7 +430,7 @@
                   <span class="red">{{user["doration"]}}D</span>
                 {% endif %}
                 <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/refresh-icon-1@2x.png" alt="Renew" onclick="new_pop('Renew User', '{{user.username}}', '{{user.id}}', '{{user.inbound_id}}', '/renew')">
-                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/download-icon@2x.png" alt="Download" onclick="config_pop('{{user.id}}', '{{user.config_url}}')">
+                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/download-icon@2x.png" alt="Download" onclick="config_pop('{{user.id}}', '{{user.inbound_id}}', '{{user.username}}')">
               </div>
             </div>
            {% endfor %} 
@@ -561,43 +561,71 @@
 
   <script>
     // انتخاب المان‌های مورد نیاز
-    function config_pop(user_id, url) {
-      const modalSection = document.createElement('section');
-      modalSection.className = 'config_pop';
-    
-      modalSection.innerHTML = `
-        <div class="config_container">
-          <!-- White Box -->
-          <div class="white-box">
-              <img src="/static/qrcodes/${user_id}.png" alt="QR CODE">
-          </div>
-
-          <!-- Input Field -->
-          <input type="text" id="url" value="${url}" readonly>
-
-          <!-- Buttons -->
-          <button class="copy-btn">Copy</button>
-          <button class="qr-btn">QR Code</button>
-        </div>
-      `;
-    
-      document.body.appendChild(modalSection);
-
-      const copyButton = document.querySelector('.copy-btn');
-      const qrButton = document.querySelector('.qr-btn');
-      let copyGfGText =
-            document.getElementById("url");
-      copyButton.addEventListener('click', () => {
-        copyGfGText.select();
-        document.execCommand("copy");
-        alert('Link Copied To ClipBoard');
-        modalSection.remove();
+    function config_pop(config_id, inbound_id, username) {
+      const data = JSON.stringify({
+        config_id: config_id,
+        inbound_id: inbound_id,
+        username: username
       });
 
-      qrButton.addEventListener('click', () => {
-        window.open(`/download/${user_id}`, "_self")
-        modalSection.remove();
-      });
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', "/get_config", true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log('Success:', JSON.parse(xhr.responseText));
+          if (JSON.parse(xhr.responseText)["status"] === true){
+            const config_url = JSON.parse(xhr.responseText)["data"]["config_url"]
+            const modalSection = document.createElement('section');
+            modalSection.className = 'config_pop';
+          
+            modalSection.innerHTML = `
+              <div class="config_container">
+                <!-- White Box -->
+                <div class="white-box">
+                    <img src="/static/qrcodes/${config_id}.png" alt="QR CODE">
+                </div>
+
+                <!-- Input Field -->
+                <input type="text" id="url" value="${config_url}" readonly>
+
+                <!-- Buttons -->
+                <button class="copy-btn">Copy</button>
+                <button class="qr-btn">QR Code</button>
+              </div>
+            `;
+          
+            document.body.appendChild(modalSection);
+
+            const copyButton = document.querySelector('.copy-btn');
+            const qrButton = document.querySelector('.qr-btn');
+            let copyGfGText =
+                  document.getElementById("url");
+            copyButton.addEventListener('click', () => {
+              copyGfGText.select();
+              document.execCommand("copy");
+              alert('Link Copied To ClipBoard');
+              modalSection.remove();
+            });
+
+            qrButton.addEventListener('click', () => {
+              window.open(`/download/${user_id}`, "_self")
+              modalSection.remove();
+            });
+          }
+          else{
+            alert(JSON.parse(xhr.responseText)["error"]);
+          }
+        } else if (xhr.readyState === 4) {
+          console.error('Error:', xhr.statusText);
+          alert('An error occurred while submitting data.');
+        }
+      };
+
+      xhr.send(data);
+
+      
     }
   </script>
 

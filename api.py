@@ -5,6 +5,7 @@ import json
 import os
 import time
 import qrcode
+from urllib.parse import quote
 
 class SanaeiAPI():
     def __init__(self, username, password, url:str):
@@ -235,7 +236,7 @@ class SanaeiAPI():
             headerType = inboundSetting["tcpSettings"]["header"]["type"]
             if headerType != 'none':
                 
-                path = inboundSetting["tcpSettings"]["header"]["request"]["path"][0]
+                path = quote(inboundSetting["tcpSettings"]["header"]["request"]["path"][0], safe='') 
                 try:
                     try:
                         
@@ -247,7 +248,7 @@ class SanaeiAPI():
                     
         elif netType == "ws":
         
-            path = inboundSetting["wsSettings"]["path"]
+            path = quote(inboundSetting["wsSettings"]["path"], safe='') 
             try:
                 host = inboundSetting["wsSettings"]["headers"]["host"]
             except:
@@ -459,7 +460,7 @@ class SanaeiAPI():
         img = qrcode.make(config)
         img.save(os.path.join("static", "qrcodes", f'{uid}.png'))
         
-        
-# sn = SanaeiAPI("a", "a", "http://5.75.204.10:666/a")
+# sn = SanaeiAPI("GOD", "Man.69.MyXras", "http://www.x8ss0.com:443/oxoxo")
 # print(json.dumps(sn.update_client(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"), indent=4))
 # sn.create_qrcode("3ff0b0fe-15dd-11f0-a002-60dd8efd8828", sn.get_config(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"))
+# print(sn.get_config(5, "00000005-16f9-40db-b610-5d9ca51d3c23", "test"))

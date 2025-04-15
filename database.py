@@ -231,7 +231,7 @@ class Database():
         except Exception as error:
             return {"status":False, "error":self.errors.get(str(error), str(error))}
         
-    def add_config(self, id:str, username:str, inbound_id:int, config_url:str, admin_id:int):
+    def add_config(self, id:str, username:str, inbound_id:int, admin_id:int):
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
@@ -241,14 +241,13 @@ class Database():
                     id TEXT NOT NULL UNIQUE,
                     username TEXT NOT NULL,
                     inbound_id INT NOT NULL,
-                    config_url TEXT NOT NULL,
                     admin_id INT NOT NULL
                 )
             ''')
             
             cursor.execute('''
-                INSERT OR FAIL INTO configs (id, username, inbound_id, config_url, admin_id) VALUES (?, ?, ?, ?, ?)
-            ''', (id, username, inbound_id, config_url, admin_id))
+                INSERT OR FAIL INTO configs (id, username, inbound_id, admin_id) VALUES (?, ?, ?, ?, ?)
+            ''', (id, username, inbound_id, admin_id))
             
             conn.commit()
             conn.close()
@@ -267,7 +266,6 @@ class Database():
                     id TEXT NOT NULL UNIQUE,
                     username TEXT NOT NULL,
                     inbound_id INT NOT NULL,
-                    config_url TEXT NOT NULL,
                     admin_id INT NOT NULL
                 )
             ''')
@@ -281,8 +279,7 @@ class Database():
                 configs.append({
                     "id":i[0],
                     "username":i[1],
-                    "inbound_id":i[2],
-                    "config_url":i[3]
+                    "inbound_id":i[2]
                 })
             return {"status":True, "data":configs}
         except Exception as error:
@@ -331,7 +328,30 @@ class Database():
         except Exception as error:
             return {"status":False, "error":str(error)}
         
+    def update_user(self, user_id, inbound_id):
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS configs (
+                    id TEXT NOT NULL UNIQUE,
+                    username TEXT NOT NULL,
+                    inbound_id INT NOT NULL,
+                    admin_id INT NOT NULL
+                )
+            ''')
+            
+            conn.commit()
+            
+            cursor.execute(f'UPDATE configs SET inbound_id = "{inbound_id}" WHERE id = "{user_id}"')
+            conn.commit()
+            conn.close()
+            
+            return {"status":True}
+        except Exception as error:
+            return {"status":False, "error":self.errors.get(str(error), str(error))}
 
 # db = Database()
 
-# print(db.get_admins_configs(3))
+# print(db.update_user("00000005-16f9-40db-b610-5d9ca51d3c23", 6, "vless://00000005-16f9-40db-b610-5d9ca51d3c23@www.x8ss0.com:2052?type=ws&path=%2FV2ray%3Fed%3D443&host=#New test"))
