@@ -246,7 +246,7 @@ class Database():
             ''')
             
             cursor.execute('''
-                INSERT OR FAIL INTO configs (id, username, inbound_id, admin_id) VALUES (?, ?, ?, ?, ?)
+                INSERT OR FAIL INTO configs (id, username, inbound_id, admin_id) VALUES (?, ?, ?, ?)
             ''', (id, username, inbound_id, admin_id))
             
             conn.commit()
