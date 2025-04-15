@@ -179,7 +179,7 @@ def new():
         wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
         if wallet >= 60000:
             inbound_id = int(db.get_admins_inbound_id(session["UUID"])["data"]["inbound_id"])
-            d = sn.add_client(inbound_id, username)
+            d = sn.add_client(inbound_id, username, session["UUID"])
             if d["status"] ==False:
                 return {"status":False, "error":d["error"]}
             

@@ -23,6 +23,13 @@ class SanaeiAPI():
             'onlines':'/panel/api/inbounds/onlines/'
         }
         
+    def custom_uuid(self, admin_id, width=8):
+      prefix = str(admin_id).zfill(width)[:width]
+      u = str(uuid.uuid4())
+      parts = u.split('-')
+      parts[0] = prefix
+      return '-'.join(parts)
+        
     def saveCookie(self, Cookie):
         with open(os.path.join('cookie.json'), 'w') as f:
             f.write(json.dumps(Cookie))
@@ -93,8 +100,8 @@ class SanaeiAPI():
             self.login()
             return self.get_client_traffic()
         
-    def add_client(self, inbound_id, username, traffic= 64424509440, doration="-2592000000":
-        uid = str(uuid.uuid1())
+    def add_client(self, inbound_id, username, admin_id, traffic= 64424509440, doration="-2592000000":
+        uid = str(self.custom_uuid(admin_id)
         settings = "{\"clients\": [{\"id\": \""+uid+"\",\"flow\": \"\",\"email\": \""+username+"\",\"limitIp\": 0,\"totalGB\": "+str(traffic)+",\"expiryTime\": "+str(doration)+",\"enable\": true,\"tgId\": \"\",\"subId\": \"\",\"reset\": 0}]}"
         data = requests.post(
             url=self.url + self.pathes["add_client"],
