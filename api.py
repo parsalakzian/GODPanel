@@ -101,7 +101,7 @@ class SanaeiAPI():
             return self.get_client_traffic()
         
     def add_client(self, inbound_id, username, admin_id, traffic= 64424509440, doration=int(time.time())*1000 + 2592000000):
-        uid = str(self.custom_uuid(admin_id)
+        uid = str(self.custom_uuid(admin_id))
         settings = "{\"clients\": [{\"id\": \""+uid+"\",\"flow\": \"\",\"email\": \""+username+"\",\"limitIp\": 0,\"totalGB\": "+str(traffic)+",\"expiryTime\": "+str(doration)+",\"enable\": true,\"tgId\": \"\",\"subId\": \"\",\"reset\": 0}]}"
         data = requests.post(
             url=self.url + self.pathes["add_client"],
