@@ -460,7 +460,55 @@ class SanaeiAPI():
         img = qrcode.make(config)
         img.save(os.path.join("static", "qrcodes", f'{uid}.png'))
         
+    def get_admin_clients(self, inbound_id, admin_id):
+        data = self.get_inbound(inbound_id)
+        if data["status"]:
+            inbound = data["data"]
+            settings = json.loads(inbound["settings"])
+            if settings["clients"]:
+                onlines = self.onlines()["onlines"] if self.onlines()["onlines"] != None else []
+                online = 0
+                expiryes = 0
+                clients =  settings["clients"]
+                prefix = str(admin_id).zfill(8)[:8]
+                admin_clients = []
+                for cl in clients:
+                    if str(cl["id"]).startswith(prefix):
+                        if cl["expiryTime"] > 0:
+                            ext = int((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24)
+                        else:
+                            ext = - int((cl["expiryTime"])/1000/60/60/24)
+                        
+                        if cl["email"] in onlines:
+                            online += 1
+                        if ext < 0:
+                            expiryes += 1
+                            
+                        admin_clients.append({
+                            "id": cl["id"],
+                            "username": cl["email"],
+                            "inbound_id": inbound_id,
+                            "status": "ON" if cl["email"] in onlines else "OFF",
+                            "traffic": int(cl["totalGB"]/1024/1024/1024),
+                            "doration":ext,
+                        })
+                    
+                return {"status":True, "data":{
+                    "onlines":online,
+                    "expiryes":expiryes,
+                    "clients":admin_clients
+                }}
+            else:
+                return {"status":True, "data":{
+                    "onlines":[],
+                    "expiryes":0,
+                    "clients":0
+                }}
+        else:
+            return data["error"]
+        
+                
 # sn = SanaeiAPI("GOD", "Man.69.MyXras", "http://www.x8ss0.com:443/oxoxo")
 # print(json.dumps(sn.update_client(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"), indent=4))
 # sn.create_qrcode("3ff0b0fe-15dd-11f0-a002-60dd8efd8828", sn.get_config(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"))
-# print(sn.get_config(5, "00000005-16f9-40db-b610-5d9ca51d3c23", "test"))
+# print(sn.get_admin_clients(6, 5))

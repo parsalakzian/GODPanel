@@ -12,23 +12,24 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1a202c; /* Dark blue background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+body {
+    font-family: 'Jura', Helvetica, sans-serif;
+    background-color: #240046; /* Darker Purple background */
+    color: #e2e8f0; /* Lighter text color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-        .login-container {
-            background: linear-gradient(to bottom, #4567b8, #2d3e50); /* Gradient background */
-            border-radius: 10px;
-            padding: 20px 30px; /* Top/Bottom: 20px, Left/Right: 30px */
-            width: 300px; /* Container width */
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.login-container {
+    background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    text-align: center;
+}
 
         .login-container h1 {
             color: white;
@@ -55,22 +56,22 @@
             height: 40px; /* Fixed height for inputs */
         }
 
-        form button {
-            width: 100%;
-            padding: 10px; /* Button padding */
-            background-color: #2ecc71; /* Green button */
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            height: 40px; /* Fixed height for button */
-        }
+form button {
+    width: 100%;
+    padding: 10px; /* Button padding */
+    background-color: #007bff; /* Blue Accent */
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 40px; /* Fixed height for button */
+}
 
-        form button:hover {
-            background-color: #27ae60; /* Slightly darker green on hover */
-        }
+form button:hover {
+    background-color: #0056b3; /* Darker Blue */
+}
 
         /* Responsive Design */
         @media (max-width: 600px) {

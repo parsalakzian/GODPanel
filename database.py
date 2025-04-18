@@ -91,6 +91,19 @@ class Database():
         except Exception as error:
             return {"status":False, "error":self.errors.get(str(error), str(error))}
         
+    def edit_admin(self, username:str, password:str, inbound_id:int):
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute(f'UPDATE admins SET password = "{password}", inbound_id = {inbound_id} WHERE username = "{username}"')
+            
+            conn.commit()
+            conn.close()
+            return {"status":True}
+        except Exception as error:
+            return {"status":False, "error":self.errors.get(str(error), str(error))}
+        
     def get_admins(self):
         try:
             conn = sqlite3.connect(self.db_path)

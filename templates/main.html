@@ -1,381 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Jura&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Jura', Helvetica, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jura&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Jura", Helvetica, sans-serif;
+      }
 
-    body {
-      background-color: #240046; /* Darker Purple Background */
-      color: #e2e8f0; /* Lighter text color */
-      overflow: hidden;
-    }
+      body {
+        background-color: #240046; /* Darker Purple Background */
+        color: #e2e8f0; /* Lighter text color */
+        overflow: hidden;
+      }
 
-    .container {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      padding: 20px;
-      gap: 20px;
-    }
-
-    .left-panel, .right-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .left-panel {
-      flex: 3;
-    }
-
-    .right-panel {
-      flex: 1;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header img {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-    }
-
-    .wallet {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      background: #5600AC; /* Primary Purple */
-      padding: 5px 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .wallet img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .section {
-      background: #3c0078; /* Medium Dark Purple */
-      border-radius: 15px; /* Slightly less rounded */
-      padding: 20px; /* More padding */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    .section-title {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    .news-box {
-      height: 100px;
-      background: linear-gradient(135deg, #5600AC, #007bff); /* Purple to Blue Gradient */
-      padding: 15px;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-      color: #ffffff; /* Ensure text is white */
-    }
-
-    .totals {
-      display: grid; /* Use grid for better alignment */
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-
-    .totals div {
-      text-align: center;
-      border-radius: 10px; /* Less rounded */
-      padding: 12px;
-      font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      color: #ffffff; /* Ensure text is white */
-    }
-
-    .online { background: #007bff; } /* Blue Accent */
-    .total { background: #8A4DD4; } /* Lighter Purple */
-    .expired { background: #e74c3c; } /* Keep Red */
-
-    .user-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .user-header .actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .user-header .actions img {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    .search {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #007bff; /* Blue Accent */
-      padding: 8px 12px;
-      border-radius: 10px; /* Consistent rounding */
-      margin-bottom: 10px;
-    }
-
-    .search input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: black; /* Changed text color to black */
-    }
-
-    .search input::placeholder { /* Style the placeholder text */
-      color: #888; /* Set placeholder color to gray */
-      font-weight: bolder;
-    }
-
-    .header-icon {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      fill: #ffffff; /* Set fill color to white */
-    }
-
-    .wallet-icon {
-      width: 20px;
-      height: 20px;
-      fill: #ffffff; /* Set fill color to white */
-      margin-right: 3px;
-    }
-
-    .action-icon {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-      fill: #ffffff; /* Set fill color to white */
-    }
-
-    .search-icon {
-      width: 20px;
-      height: 20px;
-      fill: #ffffff; /* Set fill color to white */
-    }
-
-    .search img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .user-list {
-      height: 400px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .user-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #48008E; /* Slightly lighter dark purple */
-      padding: 10px 15px;
-      border-radius: 10px; /* Consistent rounding */
-      transition: background-color 0.2s ease;
-    }
-
-    .user-item:hover {
-      background: #5600AC; /* Primary Purple on hover */
-      color: #ffffff;
-    }
-
-    .user-item span.status {
-      font-size: 11px; /* Slightly smaller */
-      padding: 4px 8px; 
-      /* More padding */
-      border-radius: 8px;
-      margin-right: 5px;
-      font-weight: bold;
-    }
-
-    .status.online {
-      background: #007bff; /* Blue Accent */
-      color: #ffffff;
-    }
-
-    .status.offline {
-      background: #e74c3c; /* Red */
-      color: #ffffff;
-    }
-
-    .user-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: bold;
-    }
-
-    .user-actions span {
-      padding: 4px 8px; /* More padding */
-      border-radius: 8px;
-      font-size: 11px; /* Slightly smaller */
-      color: #ffffff;
-      font-weight: bold;
-      font-weight: bold;
-    }
-
-    .user-actions .green {
-      background: #007bff; /* Blue Accent */
-      color: #ffffff;
-    }
-
-    .user-actions .red {
-      background: #e74c3c; /* Red */
-      color: #ffffff;
-    }
-
-    .user-actions img {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-
-    @media (max-width: 768px) {
       .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      .left-panel,
+      .right-panel {
+        display: flex;
         flex-direction: column;
-        padding: 10px;
+        gap: 20px;
+      }
+
+      .left-panel {
+        flex: 3;
+      }
+
+      .right-panel {
+        flex: 1;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header img {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
+
+      .wallet {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: #5600ac; /* Primary Purple */
+        padding: 5px 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .wallet img {
+        width: 20px;
+        height: 20px;
+      }
+
+      .section {
+        background: #3c0078; /* Medium Dark Purple */
+        border-radius: 15px; /* Slightly less rounded */
+        padding: 20px; /* More padding */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .section-title {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+      .news-box {
+        height: 100px;
+        background: linear-gradient(
+          135deg,
+          #5600ac,
+          #007bff
+        ); /* Purple to Blue Gradient */
+        padding: 15px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        color: #ffffff; /* Ensure text is white */
+      }
+
+      .totals {
+        display: grid; /* Use grid for better alignment */
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+      }
+
+      .totals div {
+        text-align: center;
+        border-radius: 10px; /* Less rounded */
+        padding: 12px;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        color: #ffffff; /* Ensure text is white */
+      }
+
+      .online {
+        background: #007bff;
+      } /* Blue Accent */
+      .total {
+        background: #8a4dd4;
+      } /* Lighter Purple */
+      .expired {
+        background: #e74c3c;
+      } /* Keep Red */
+
+      .user-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .user-header .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .user-header .actions img {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #007bff; /* Blue Accent */
+        padding: 8px 12px;
+        border-radius: 10px; /* Consistent rounding */
+        margin-bottom: 10px;
+      }
+
+      .search input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: black; /* Changed text color to black */
+      }
+
+      .search input::placeholder {
+        /* Style the placeholder text */
+        color: #888; /* Set placeholder color to gray */
+        font-weight: bolder;
+      }
+
+      .header-icon {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        fill: #ffffff; /* Set fill color to white */
+      }
+
+      .wallet-icon {
+        width: 20px;
+        height: 20px;
+        fill: #ffffff; /* Set fill color to white */
+        margin-right: 3px;
+      }
+
+      .action-icon {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        fill: #ffffff; /* Set fill color to white */
+      }
+
+      .search-icon {
+        width: 20px;
+        height: 20px;
+        fill: #ffffff; /* Set fill color to white */
+      }
+
+      .search img {
+        width: 20px;
+        height: 20px;
       }
 
       .user-list {
-        height: 150px;
+        height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
-    }
-  </style>
-  <style>
-    .new_pop {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(36, 0, 70, 0.85); /* Darker Purple transparent overlay */
-    }
-    .modal {
-      background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-      padding: 20px;
-      width: 90%;
-      max-width: 300px;
-      text-align: center;
-      color: #ffffff;
-    }
-    .modal-header {
-      background-color: #007bff; /* Blue Accent */
-      color: #ffffff; /* White text on blue */
-      padding: 10px 15px;
-      border-radius: 8px 8px 0 0; /* Round top corners only */
-      margin: -20px -20px 16px -20px; /* Extend to edges */
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .modal-content {
-      text-align: left;
-      margin-bottom: 16px;
-      font-size: 14px;
-    }
-    .modal-content p {
-      margin: 6px 0;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: space-between;
-    }
-    .modal-actions button {
-      flex: 1;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      color: white;
-      cursor: pointer;
-      margin: 0 5px;
-      transition: background-color 0.2s ease;
-    }
-    .btn-ok {
-      background-color: #007bff; /* Blue Accent */
-    }
-    .btn-ok:hover {
-      background-color: #0056b3; /* Darker Blue */
-    }
-    .btn-no {
-      background-color: #6b7280; /* Grey */
-    }
-    .btn-no:hover {
-      background-color: #4b5563; /* Darker Grey */
-    }
-    @media (max-width: 400px) {
+
+      .user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #48008e; /* Slightly lighter dark purple */
+        padding: 10px 15px;
+        border-radius: 10px; /* Consistent rounding */
+        transition: background-color 0.2s ease;
+      }
+
+      .user-item:hover {
+        background: #5600ac; /* Primary Purple on hover */
+        color: #ffffff;
+      }
+
+      .user-item span.status {
+        font-size: 11px; /* Slightly smaller */
+        padding: 4px 8px;
+        /* More padding */
+        border-radius: 8px;
+        margin-right: 5px;
+        font-weight: bold;
+      }
+
+      .status.online {
+        background: #007bff; /* Blue Accent */
+        color: #ffffff;
+      }
+
+      .status.offline {
+        background: #e74c3c; /* Red */
+        color: #ffffff;
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+      }
+
+      .user-actions span {
+        padding: 4px 8px; /* More padding */
+        border-radius: 8px;
+        font-size: 11px; /* Slightly smaller */
+        color: #ffffff;
+        font-weight: bold;
+        font-weight: bold;
+      }
+
+      .user-actions .green {
+        background: #007bff; /* Blue Accent */
+        color: #ffffff;
+      }
+
+      .user-actions .red {
+        background: #e74c3c; /* Red */
+        color: #ffffff;
+      }
+
+      .user-actions img {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          padding: 10px;
+        }
+
+        .user-list {
+          height: 150px;
+        }
+      }
+    </style>
+    <style>
+      .new_pop {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(
+          36,
+          0,
+          70,
+          0.85
+        ); /* Darker Purple transparent overlay */
+      }
       .modal {
-        max-width: 260px;
-        padding: 16px;
+        background: linear-gradient(
+          160deg,
+          #5600ac,
+          #3c0078
+        ); /* Purple Gradient */
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        width: 90%;
+        max-width: 300px;
+        text-align: center;
+        color: #ffffff;
       }
       .modal-header {
-        font-size: 14px;
+        background-color: #007bff; /* Blue Accent */
+        color: #ffffff; /* White text on blue */
+        padding: 10px 15px;
+        border-radius: 8px 8px 0 0; /* Round top corners only */
+        margin: -20px -20px 16px -20px; /* Extend to edges */
+        font-size: 18px;
+        font-weight: bold;
       }
       .modal-content {
-        font-size: 13px;
+        text-align: left;
+        margin-bottom: 16px;
+        font-size: 14px;
+      }
+      .modal-content p {
+        margin: 6px 0;
+      }
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
       }
       .modal-actions button {
-        font-size: 13px;
-        padding: 6px;
+        flex: 1;
+        padding: 8px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        color: white;
+        cursor: pointer;
+        margin: 0 5px;
+        transition: background-color 0.2s ease;
       }
-    }
-  </style>
-  <style>
-    .config_pop {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: rgba(36, 0, 70, 0.85); /* Darker Purple transparent overlay */
-    }
-    /* Main Container */
-    .config_container {
-        background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
+      .btn-ok {
+        background-color: #007bff; /* Blue Accent */
+      }
+      .btn-ok:hover {
+        background-color: #0056b3; /* Darker Blue */
+      }
+      .btn-no {
+        background-color: #6b7280; /* Grey */
+      }
+      .btn-no:hover {
+        background-color: #4b5563; /* Darker Grey */
+      }
+      @media (max-width: 400px) {
+        .modal {
+          max-width: 260px;
+          padding: 16px;
+        }
+        .modal-header {
+          font-size: 14px;
+        }
+        .modal-content {
+          font-size: 13px;
+        }
+        .modal-actions button {
+          font-size: 13px;
+          padding: 6px;
+        }
+      }
+    </style>
+    <style>
+      .config_pop {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(
+          36,
+          0,
+          70,
+          0.85
+        ); /* Darker Purple transparent overlay */
+      }
+      /* Main Container */
+      .config_container {
+        background: linear-gradient(
+          160deg,
+          #5600ac,
+          #3c0078
+        ); /* Purple Gradient */
         border-radius: 12px;
         padding: 25px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         width: 300px;
         text-align: center;
-    }
+      }
 
-    /* White Box */
-    .white-box {
+      /* White Box */
+      .white-box {
         background-color: #ffffff; /* White background for QR */
         height: 250px; /* Slightly smaller */
         border-radius: 10px;
@@ -383,30 +416,30 @@
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+      }
 
-    /* Image Styling */
-    .white-box img {
+      /* Image Styling */
+      .white-box img {
         max-width: 100%;
         max-height: 100%;
         border-radius: 8px;
-    }
+      }
 
-    /* Input Field */
-    .config_container input[type="text"] {
+      /* Input Field */
+      .config_container input[type="text"] {
         width: 100%;
         padding: 10px;
         margin-top: 15px;
         border: none; /* Remove border */
         border-radius: 8px;
-        background-color: #48008E; /* Medium Dark Purple */
+        background-color: #48008e; /* Medium Dark Purple */
         color: #e2e8f0; /* Lighter text */
         font-size: 14px;
         text-align: center;
-    }
+      }
 
-    /* Buttons */
-    .config_container button {
+      /* Buttons */
+      .config_container button {
         margin-top: 10px;
         padding: 10px 20px;
         border: none;
@@ -417,133 +450,153 @@
         transition: background-color 0.3s ease;
         display: flex; /* Use flex for buttons */
         justify-content: space-around; /* Space out buttons */
-    }
+      }
 
-    .copy-btn {
+      .copy-btn {
         background-color: #007bff; /* Blue Accent */
-    }
+      }
 
-    .qr-btn {
-        background-color: #8A4DD4; /* Lighter Purple */
-    }
+      .qr-btn {
+        background-color: #8a4dd4; /* Lighter Purple */
+      }
 
-    /* Hover Effects */
-    .copy-btn:hover {
+      /* Hover Effects */
+      .copy-btn:hover {
         background-color: #0056b3; /* Darker Blue */
-    }
+      }
 
-    .qr-btn:hover {
+      .qr-btn:hover {
         background-color: #7038b8; /* Darker Light Purple */
-    }
-</style>
-</head>
-<body>
-  <div class="container">
-    <div class="right-panel">
-      <div class="header">
-        <object type="image/svg+xml" data="/static/icons/LogOut Icon.svg" class="header-icon" onclick="window.open('/logout', '_self')"></object>
-        <div class="wallet">
-          <object type="image/svg+xml" data="/static/icons/Wallet Icon.svg" class="wallet-icon"></object>
-          <span>{{data["wallet"]}}T</span>
-        </div>
-      </div>
-      <div class="section">
-        <div class="section-title">News</div>
-        <div class="news-box">{{data["new"]}}</div>
-      </div>
-      <div class="section">
-        <div class="section-title">Totals</div>
-        <div class="totals">
-          <div class="total">{{data["total"]}}</div>
-          <div class="online">{{data["online"]}}</div>
-          <div class="expired">{{data["expired"]}}</div>
-        </div>
-      </div>
-    </div>
-    <div class="left-panel">
-      <div class="section">
-        <div class="user-header">
-          <div class="section-title">Users</div>
-          <div style="padding-right: 10px;" class="actions">
-            <object type="image/svg+xml" data="/static/icons/Plus Icon.svg" class="action-icon" onclick="new_pop('New User', '{{data.next_user}}', '', '', '/new')"></object>
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="right-panel">
+        <div class="header">
+          <img
+            src="/static/icons/LogOut Icon.svg"
+            class="header-icon"
+            onclick="window.open('/logout', '_self')"
+          />
+          <div class="wallet">
+            <img src="/static/icons/Wallet Icon.svg" class="wallet-icon" />
+            <span>{{data["wallet"]}}T</span>
           </div>
         </div>
-        <div class="search">
-          <input id="searchInput" type="text" placeholder="Search" oninput="filterUsers()">
-          <object type="image/svg+xml" data="/static/icons/Search Icon.svg" class="search-icon"></object>
+        <div class="section">
+          <div class="section-title">News</div>
+          <div class="news-box">{{data["new"]}}</div>
         </div>
-        <div class="user-list">
-          {% for user in data["configs"] %}
+        <div class="section">
+          <div class="section-title">Totals</div>
+          <div class="totals">
+            <div class="total">{{data["total"]}}</div>
+            <div class="online">{{data["online"]}}</div>
+            <div class="expired">{{data["expired"]}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="left-panel">
+        <div class="section">
+          <div class="user-header">
+            <div class="section-title">Users</div>
+            <div style="padding-right: 10px" class="actions">
+              <img
+                src="/static/icons/Plus Icon.svg"
+                class="action-icon"
+                onclick="new_pop('New User', '{{data.next_user}}', '', '', '/new')"
+              />
+            </div>
+          </div>
+          <div class="search">
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search"
+              oninput="filterUsers()"
+            />
+            <img src="/static/icons/Search Icon.svg" class="search-icon" />
+          </div>
+          <div class="user-list">
+            {% for user in data["configs"] %}
             <div class="user-item">
               <span class="user_name">{{user.username}}</span>
               <div class="user-actions">
-                {% if user["status"] == "Online" %}
-                  <span class="status online">{{user["status"]}}</span>
+                {% if user["status"] == "ON" %}
+                <span class="status online">{{user["status"]}}</span>
                 {% else %}
-                  <span class="status offline">{{user["status"]}}</span>
-                {% endif %}
-                
-                {% if user["traffic"] > 0 %}
-                  <span class="green">{{user["traffic"]}}G</span>
+                <span class="status offline">{{user["status"]}}</span>
+                {% endif %} {% if user["traffic"] > 0 %}
+                <span class="green">{{user["traffic"]}}G</span>
                 {% else %}
-                  <span class="red">{{user["traffic"]}}G</span>
-                {% endif %}
-
-                {% if user["doration"] > 0 %}
-                  <span class="green">{{user["doration"]}}D</span>
+                <span class="red">{{user["traffic"]}}G</span>
+                {% endif %} {% if user["doration"] > 0 %}
+                <span class="green">{{user["doration"]}}D</span>
                 {% else %}
-                  <span class="red">{{user["doration"]}}D</span>
+                <span class="red">{{user["doration"]}}D</span>
                 {% endif %}
-                <object type="image/svg+xml" data="/static/icons/Refresh Icon.svg" class="action-icon" onclick="new_pop('Renew User', '{{user.username}}', '{{user.id}}', '{{user.inbound_id}}', '/renew')"></object>
-                <object type="image/svg+xml" data="/static/icons/Download Icon.svg" class="action-icon" onclick="config_pop('{{user.id}}', '{{user.inbound_id}}', '{{user.username}}')"></object>
+                <img
+                  src="/static/icons/Refresh Icon.svg"
+                  class="action-icon"
+                  onclick="new_pop('Renew User', '{{user.username}}', '{{user.id}}', '{{user.inbound_id}}', '/renew')"
+                />
+                <img
+                  src="/static/icons/Download Icon.svg"
+                  class="action-icon"
+                  onclick="config_pop('{{user.id}}', '{{user.inbound_id}}', '{{user.username}}')"
+                />
               </div>
             </div>
-           {% endfor %}
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    function filterUsers() {
-      // گرفتن مقدار ورودی از فیلد جست‌وجو
-      const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    
-      // گرفتن تمام آیتم‌های لیست کاربران
-      const users = document.getElementsByClassName('user-item');
-    
-      // حلقه برای بررسی هر کاربر
-      for (let i = 0; i < users.length; i++) {
-        const username = users[i].getElementsByClassName("user_name")[0].textContent.toLowerCase();
-    
-        // بررسی تطابق نام کاربری با مقدار ورودی
-        if (username.includes(searchInput)) {
-          users[i].style.display = ''; // نمایش کاربر
-        } else {
-          users[i].style.display = 'none'; // مخفی کردن کاربر
+    <script>
+      function filterUsers() {
+        // گرفتن مقدار ورودی از فیلد جست‌وجو
+        const searchInput = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+
+        // گرفتن تمام آیتم‌های لیست کاربران
+        const users = document.getElementsByClassName("user-item");
+
+        // حلقه برای بررسی هر کاربر
+        for (let i = 0; i < users.length; i++) {
+          const username = users[i]
+            .getElementsByClassName("user_name")[0]
+            .textContent.toLowerCase();
+
+          // بررسی تطابق نام کاربری با مقدار ورودی
+          if (username.includes(searchInput)) {
+            users[i].style.display = ""; // نمایش کاربر
+          } else {
+            users[i].style.display = "none"; // مخفی کردن کاربر
+          }
         }
       }
-    }
-  </script>
+    </script>
 
+    <script>
+      // انتخاب المان‌های مورد نیاز
+      function new_pop(head, username, user_id, inbound_id, url) {
+        const modalUsername = username;
+        const modalUserId = user_id;
+        const modalInboundId = inbound_id;
+        const modalSection = document.createElement("section");
+        modalSection.className = "new_pop";
 
-  <script>
-    // انتخاب المان‌های مورد نیاز
-    function new_pop(head, username, user_id, inbound_id, url) {
-
-      const modalUsername = username;
-      const modalUserId = user_id;
-      const modalInboundId = inbound_id;
-      const modalSection = document.createElement('section');
-      modalSection.className = 'new_pop';
-    
-      modalSection.innerHTML = `
+        modalSection.innerHTML = `
         <div class="modal">
           <div class="modal-header">${head}</div>
           <div class="modal-content">
             <p><strong>Name :</strong> ${username}</p>
             <p><strong>Time :</strong> 30 Days</p>
             <p><strong>Traffic :</strong> 60 GB</p>
+            <p><strong>Price :</strong> -60,000 T</p>
           </div>
           <div class="modal-actions">
             <button class="btn-no">NO</button>
@@ -551,101 +604,98 @@
           </div>
         </div>
       `;
-    
-      document.body.appendChild(modalSection);
 
-      const noButton = document.querySelector('.btn-no');
-      const okButton = document.querySelector('.btn-ok');
+        document.body.appendChild(modalSection);
 
-      noButton.addEventListener('click', () => {
-        modalSection.remove();
-      });
+        const noButton = document.querySelector(".btn-no");
+        const okButton = document.querySelector(".btn-ok");
 
-      okButton.addEventListener('click', () => {
-        if (head === "Renew User"){
-          const data = JSON.stringify({
-            username: modalUsername,
-            user_id: modalUserId,
-            inbound_id: modalInboundId
-          });
+        noButton.addEventListener("click", () => {
+          modalSection.remove();
+        });
 
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', url, true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
+        okButton.addEventListener("click", () => {
+          if (head === "Renew User") {
+            const data = JSON.stringify({
+              username: modalUsername,
+              user_id: modalUserId,
+              inbound_id: modalInboundId,
+            });
 
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              console.log('Success:', JSON.parse(xhr.responseText));
-              if (JSON.parse(xhr.responseText)["status"] === true){
-                window.open("/", "_self")
-                modalSection.remove();
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log("Success:", JSON.parse(xhr.responseText));
+                if (JSON.parse(xhr.responseText)["status"] === true) {
+                  window.open("/", "_self");
+                  modalSection.remove();
+                } else {
+                  alert(JSON.parse(xhr.responseText)["error"]);
+                }
+              } else if (xhr.readyState === 4) {
+                console.error("Error:", xhr.statusText);
+                alert("An error occurred while submitting data.");
               }
-              else{
-                alert(JSON.parse(xhr.responseText)["error"]);
+            };
+
+            xhr.send(data);
+          } else {
+            const data = JSON.stringify({
+              username: modalUsername,
+            });
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log("Success:", JSON.parse(xhr.responseText));
+                if (JSON.parse(xhr.responseText)["status"] === true) {
+                  window.open("/", "_self");
+                  modalSection.remove();
+                } else {
+                  alert(JSON.parse(xhr.responseText)["error"]);
+                }
+              } else if (xhr.readyState === 4) {
+                console.error("Error:", xhr.statusText);
+                alert("An error occurred while submitting data.");
               }
-            } else if (xhr.readyState === 4) {
-              console.error('Error:', xhr.statusText);
-              alert('An error occurred while submitting data.');
-            }
-          };
+            };
 
-          xhr.send(data);
-        } else {
-          const data = JSON.stringify({
-            username: modalUsername,
-          });
+            xhr.send(data);
+          }
+        });
+      }
+    </script>
 
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', url, true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
+    <script>
+      // انتخاب المان‌های مورد نیاز
+      function config_pop(config_id, inbound_id, username) {
+        const data = JSON.stringify({
+          config_id: config_id,
+          inbound_id: inbound_id,
+          username: username,
+        });
 
-          xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-              console.log('Success:', JSON.parse(xhr.responseText));
-              if (JSON.parse(xhr.responseText)["status"] === true){
-                window.open("/", "_self")
-                modalSection.remove();
-              }
-              else{
-                alert(JSON.parse(xhr.responseText)["error"]);
-              }
-            } else if (xhr.readyState === 4) {
-              console.error('Error:', xhr.statusText);
-              alert('An error occurred while submitting data.');
-            }
-          };
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/get_config", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
 
-          xhr.send(data);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log("Success:", JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true) {
+              const config_url = JSON.parse(xhr.responseText)["data"][
+                "config_url"
+              ];
+              const modalSection = document.createElement("section");
+              modalSection.className = "config_pop";
 
-        }
-        
-      });
-    }
-  </script>
-
-
-  <script>
-    // انتخاب المان‌های مورد نیاز
-    function config_pop(config_id, inbound_id, username) {
-      const data = JSON.stringify({
-        config_id: config_id,
-        inbound_id: inbound_id,
-        username: username
-      });
-
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', "/get_config", true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          console.log('Success:', JSON.parse(xhr.responseText));
-          if (JSON.parse(xhr.responseText)["status"] === true){
-            const config_url = JSON.parse(xhr.responseText)["data"]["config_url"]
-            const modalSection = document.createElement('section');
-            modalSection.className = 'config_pop';
-          
-            modalSection.innerHTML = `
+              modalSection.innerHTML = `
               <div class="config_container">
                 <!-- White Box -->
                 <div class="white-box">
@@ -660,39 +710,34 @@
                 <button class="qr-btn">QR Code</button>
               </div>
             `;
-          
-            document.body.appendChild(modalSection);
 
-            const copyButton = document.querySelector('.copy-btn');
-            const qrButton = document.querySelector('.qr-btn');
-            let copyGfGText =
-                  document.getElementById("url");
-            copyButton.addEventListener('click', () => {
-              copyGfGText.select();
-              document.execCommand("copy");
-              alert('Link Copied To ClipBoard');
-              modalSection.remove();
-            });
+              document.body.appendChild(modalSection);
 
-            qrButton.addEventListener('click', () => {
-              window.open(`/download/${config_id}`, "_self")
-              modalSection.remove();
-            });
+              const copyButton = document.querySelector(".copy-btn");
+              const qrButton = document.querySelector(".qr-btn");
+              let copyGfGText = document.getElementById("url");
+              copyButton.addEventListener("click", () => {
+                copyGfGText.select();
+                document.execCommand("copy");
+                alert("Link Copied To ClipBoard");
+                modalSection.remove();
+              });
+
+              qrButton.addEventListener("click", () => {
+                window.open(`/download/${config_id}`, "_self");
+                modalSection.remove();
+              });
+            } else {
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error("Error:", xhr.statusText);
+            alert("An error occurred while submitting data.");
           }
-          else{
-            alert(JSON.parse(xhr.responseText)["error"]);
-          }
-        } else if (xhr.readyState === 4) {
-          console.error('Error:', xhr.statusText);
-          alert('An error occurred while submitting data.');
-        }
-      };
+        };
 
-      xhr.send(data);
-
-      
-    }
-  </script>
-
-</body>
+        xhr.send(data);
+      }
+    </script>
+  </body>
 </html>

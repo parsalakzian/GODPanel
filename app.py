@@ -31,37 +31,29 @@ def zipdir(path, ziph):
 @app.route('/') 
 def index(): 
     if "UUID" in session and "username" in session:
-        db = Database()
-        server = db.get_servers().get("data")[0]
-        sn = SanaeiAPI(server.get("username"), server.get("password"), server.get("url"))
-        
-        d = []
-        onlines = sn.onlines()["onlines"] if sn.onlines()["onlines"] != None else []
-        online = 0
-        expiryes = 0
-        configs = db.get_admins_configs(session.get("UUID"))["data"]
-        
-        for config in configs:
-            if sn.get_client_traffic(config["username"]).get("expirytime") > 0:
-                traff = int((sn.get_client_traffic(config["username"]).get("expirytime") - int(time.time()) * 1000)/1000/60/60/24)
+        try: 
+            db = Database()
+            server = db.get_servers().get("data")[0]
+            sn = SanaeiAPI(server.get("username"), server.get("password"), server.get("url"))
+            admin_inbound_id = db.get_admins_inbound_id(session.get("UUID"))["data"]["inbound_id"]
+            dd = sn.get_admin_clients(admin_inbound_id, session.get("UUID"))
+            print(dd)
+            if dd.get("status"):
+                d = dd["data"]["clients"]
+                onlines = dd["data"]["onlines"]
+                expiryes = dd["data"]["expiryes"]
+            
+            
+                data = {"admin_id": session.get("UUID"), "username": session.get("username"), "configs": d, "total": len(d), "online": onlines, "expired": expiryes, "new": db.get_new().get("data")["new"], "wallet": f"{db.get_admins_wallet(session["UUID"]).get("data")["wallet"]:,}", "next_user":f"{session["username"]}{len(d)+1}"}
+                return render_template("main.html", data=data)
             else:
-                traff = - int((sn.get_client_traffic(config["username"]).get("expirytime"))/1000/60/60/24)
-            d.append({
-                "id":config["id"],
-                "username":config["username"],
-                "inbound_id":config["inbound_id"],
-                "status":"Online" if config["username"] in onlines else "Offline",
-                "traffic":int(sn.get_client_traffic(config["username"]).get("traffic")/1024/1024/1024),
-                "doration":traff ,
-            })
-            if config["username"] in onlines:
-                online += 1
-            if sn.get_client_traffic(config["username"]).get("expirytime") < int(time.time()) * 1000 and sn.get_client_traffic(config["username"]).get("expirytime") > 0:
-                expiryes += 1
-        
-        data = {"admin_id": session.get("UUID"), "username": session.get("username"), "configs": d, "total": len(d), "online": online, "expired": expiryes, "new": db.get_new().get("data")["new"], "wallet": f"{db.get_admins_wallet(session["UUID"]).get("data")["wallet"]:,}", "next_user":f"{session["username"]}{len(d)+1}"}
-        
-        return render_template("main.html", data=data)
+                return render_template("error.html", error=dd["error"])
+        except Exception as e:
+            import sys
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            error_message = f"{str(e)} (File: {file_name}, Line: {exc_tb.tb_lineno})"
+            return render_template("error.html", error=error_message)
     elif "username" in session and "UUID" not in session:
         return redirect(url_for("admin"))
     else:
@@ -70,35 +62,51 @@ def index():
 @app.route('/admin') 
 def admin(): 
     if "username" in session and "UUID" not in session:
-        db = Database()
-        server = db.get_servers().get("data")
-        if len(server) > 0:
-            sn = SanaeiAPI(server[0].get("username"), server[0].get("password"), server[0].get("url"))
+        try:
+            db = Database()
+            server = db.get_servers().get("data")
+            if len(server) > 0:
+                sn = SanaeiAPI(server[0].get("username"), server[0].get("password"), server[0].get("url"))
+                dda = sn.login()
+                if (dda["status"]):
+                    
+                    d = []
+                    admins = db.get_admins()["data"]
+                    
+                    if len(server) > 0:
+                        da = sn.get_inbounds()["data"]
+                    else:
+                        da = []
+                    
+                    for admin in admins:
+                        dd = db.get_admins_configs(admin["id"])
+                        d.append({
+                            "admin_id":admin["id"],
+                            "username":admin["username"],
+                            "password":admin["password"],
+                            "inbound":[item["remark"] for item in da if item["id"] == admin["inbound_id"]][0],
+                            "inbound_id":admin["inbound_id"],
+                            "wallet":f"{int(admin["wallet"]):,}",
+                            "int_wallet":admin["wallet"],
+                            "total":len(dd["data"]),
+                        })
+                    
+                    data = {"admin_id": session.get("UUID"), "admins": d, "new": db.get_new().get("data")["new"], "inbounds": json.dumps(da), "server_status":True}
+                    
+                else:
+                    data = {"admin_id": session.get("UUID"), "admins": [], "new": db.get_new().get("data")["new"], "inbounds": [], "server_status":False}
+            
+            else:
+                data = {"admin_id": session.get("UUID"), "admins": [], "new": db.get_new().get("data")["new"], "inbounds": [], "server_status":False}
+                
+            return render_template("admin.html", data=data)
         
-        d = []
-        admins = db.get_admins()["data"]
-        
-        if len(server) > 0:
-            da = sn.get_inbounds()["data"]
-        else:
-            da = []
-        
-        for admin in admins:
-            dd = db.get_admins_configs(admin["id"])
-            d.append({
-                "admin_id":admin["id"],
-                "username":admin["username"],
-                "password":admin["password"],
-                "inbound":[item["remark"] for item in da if item["id"] == admin["inbound_id"]][0],
-                "wallet":f"{int(admin["wallet"]):,}",
-                "int_wallet":admin["wallet"],
-                "total":len(dd["data"]),
-            })
-        
-        
-        data = {"admin_id": session.get("UUID"), "admins": d, "new": db.get_new().get("data")["new"], "inbounds": json.dumps(da)}
-        
-        return render_template("admin.html", data=data)
+        except Exception as e:
+            import sys
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            error_message = f"{str(e)} (File: {file_name}, Line: {exc_tb.tb_lineno})"
+            return render_template("error.html", error=error_message)
         
     else:
         return redirect(url_for("login"))    
@@ -188,9 +196,9 @@ def new():
                 if d["status"] ==False:
                     return {"status":False, "error":d["error"]}
                 
-                dd = db.add_config(d["id"], username, inbound_id, session["UUID"])
-                if dd["status"] ==False:
-                    return {"status":False, "error":dd["error"]}
+                # dd = db.add_config(d["id"], username, inbound_id, session["UUID"])
+                # if dd["status"] ==False:
+                #     return {"status":False, "error":dd["error"]}
                 
                 db.add_admin_wallet(session.get("UUID"), -60000)
                 
@@ -222,6 +230,28 @@ def new_admin():
             db = Database()
             
             d = db.add_admin(username, password, inbound_id)
+            if d["status"] == False:
+                return d
+            
+            return {"status":True}
+    
+@app.route('/edit_admin', methods=['GET', 'POST']) 
+def edit_admin(): 
+    if request.method == "GET":
+        if "username" in session:
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html")
+    else:
+        if "username" in session and "UUID" not in session:
+            data = json.loads(request.get_data())
+            username = data.get("username")
+            password = data.get("password")
+            inbound_id = data.get("inbound_id")
+            
+            db = Database()
+            
+            d = db.edit_admin(username, password, inbound_id)
             if d["status"] == False:
                 return d
             

@@ -371,24 +371,39 @@
   <div class="container">
     <div class="right-panel">
       <div class="header">
-        <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/logout-icon@2x.png" alt="Logout" onclick="window.open('/logout', '_self')">
+        <img
+          src="/static/icons/LogOut Icon.svg"
+          class="header-icon"
+          onclick="window.open('/logout', '_self')"
+        />
         <div>
           <label for="hiddenFileInput" class="upload-icon">
-            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f8e4d50a551ff812c6d460/img/---icon--cloud-upload-@2x.png" alt="Backup">
+            <img
+              src="/static/icons/Upload Icon.svg"
+              alt="Backup"
+            />
           </label>
-        
+
           <!-- فیلد انتخاب فایل (مخفی) -->
           <input type="file" id="hiddenFileInput" />
-          
-          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f8e4d50a551ff812c6d460/img/---icon--download-circled-outline-@2x.png" alt="Backup" onclick="window.open('/download_backup', '_self')">
+
+          <img
+            src="/static/icons/Backup Icon.svg"
+            class="action-icon"
+            onclick="window.open('/download_backup', '_self')"
+          />
         </div>
       </div>
       <div class="section">
         <div class="user-header">
-          <div class="section-title">News</div> 
-          
+          <div class="section-title">News</div>
+
           <div class="actions">
-            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/plus-icon@2x.png" alt="New News" onclick="new_news('/new_news')">
+            <img
+              src="/static/icons/Plus Icon.svg"
+              class="action-icon"
+              onclick="new_news('/new_news')"
+            />
           </div>
         </div>
         <div class="news-box">{{data.new}}</div>
@@ -397,9 +412,18 @@
         <div class="section-title">Settings</div>
         <div class="totals">
           <div class="server-item">
-            <span class="server_name">Server</span>
+            {% if data.server_status %}
+            <span style="color: #00ff00;" class="server_name">Server</span>
+            {% else %}
+            <span style="color: #ff0000;" class="server_name">Server</span>
+            {% endif %}
+
             <div class="server-actions">
-              <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3c213c79d4573ff5eb7fb/img/---icon--add-database-script-@2x.png" alt="Renew" onclick="set_server('/set_server')">
+              <img
+                src="/static/icons/Edit Icon.svg"
+                class="action-icon"
+                onclick="set_server('/set_server')"
+              />
             </div>
           </div>
         </div>
@@ -410,30 +434,59 @@
         <div class="user-header">
           <div class="section-title">Admins</div>
           <div style="padding-right: 10px;" class="actions">
-            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/plus-icon@2x.png" alt="New" onclick="new_pop(`{{data.inbounds}}`, '/new_admin')">
+            <img
+              src="/static/icons/Plus Icon.svg"
+              class="action-icon"
+              onclick="new_pop(`{{data.inbounds}}`, '/new_admin')"
+            />
           </div>
         </div>
         <div class="search">
-          <input id="searchInput" type="text" placeholder="Search" oninput="filterUsers()">
-          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/search-icon@2x.png" alt="Search">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search"
+            oninput="filterUsers()"
+          />
+          <img src="/static/icons/Search Icon.svg" class="search-icon" />
         </div>
-        
+
         <div class="user-list">
           {% for admin in data["admins"] %}
-            <div class="user-item">
-              <span class="user_name">{{admin["username"]}} | {{admin["password"]}} | {{admin.inbound}}</span>
-              <div class="user-actions">
-                
-                {% if admin["int_wallet"] > 59999 %}
-                  <span class="green">{{admin["wallet"]}}T</span>
-                {% else %}
-                  <span class="red">{{admin["wallet"]}}T</span>
-                {% endif %}
-                  <span class="green">{{admin["total"]}}</span>
-                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3c213c79d4573ff5eb7fb/img/---icon--add-database-script-@2x.png" alt="add price" onclick="add_admin_wallet('{{admin.admin_id}}', '/add_admin_wallet')">
-              </div>
+          <div class="user-item">
+            <span class="user_name"
+              >{{admin["username"]}} | {{admin["password"]}} |
+              {{admin.inbound}}</span
+            >
+            <div class="user-actions">
+              {% if admin["int_wallet"] > 59999 %}
+              <span class="green">{{admin["wallet"]}}T</span>
+              {% else %}
+              <span class="red">{{admin["wallet"]}}T</span>
+              {% endif %}
+              <span class="green">{{admin["total"]}}</span>
+
+              
+              <img
+                src="/static/icons/Edit Icon.svg"
+                class="action-icon"
+                onclick="edit_pop(`{{data.inbounds}}`, '{{admin.inbound_id}}', '{{admin.total}}', '{{admin.username}}', '/edit_admin')"
+              />
+
+              <img
+                src="/static/icons/Add Wallet Icon.svg"
+                class="action-icon"
+                onclick="add_admin_wallet('{{admin.admin_id}}', 'add', '/add_admin_wallet')"
+              />
+
+              <img
+                src="/static/icons/Reduce Wallet Icon.svg"
+                class="action-icon"
+                onclick="add_admin_wallet('{{admin.admin_id}}', 'reduce', '/add_admin_wallet')"
+              />
             </div>
-          {% endfor %} 
+          </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -551,6 +604,128 @@
     }
   </script>
 
+  
+
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function edit_pop(inboundss, inbound_id, clients, username, url) {
+      const modalSection = document.createElement('section');
+      modalSection.className = 'new_pop';
+      var inbounds = JSON.parse(inboundss)
+      var text = ""
+      var client = parseInt(clients)
+
+      for (let i = 0; i < inbounds.length; i++){
+        text += `<option value='${inbounds[i]["id"]}'>${inbounds[i]["remark"]}</option>`
+      }
+      
+      if (client === 0){
+        modalSection.innerHTML = `
+          <div class="login-container">
+              <div class="header-pop">
+                  <div class="title">Edit Admin</div>
+              </div>
+              
+              <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="text" id="password" name="password">
+              </div>
+              
+              <div class="form-group">
+                  <label for="inbound">Inbound:</label>
+                  
+                  <select name="inbounds" id="inbounds">
+                    
+              `+text
+              +`
+                  </select>
+              </div>
+              
+              <div class="buttons">
+                  <button class="btn btn-no">NO</button>
+                  <button class="btn btn-ok">OK</button>
+              </div>
+          </div>
+        `;
+      }
+      else{
+        modalSection.innerHTML = `
+          <div class="login-container">
+              <div class="header-pop">
+                  <div class="title">Edit Admin</div>
+              </div>
+              
+              <div class="form-group">
+                  <label for="password">Password:</label>
+                  <input type="text" id="password" name="password">
+              </div>
+              
+              <div class="buttons">
+                  <button class="btn btn-no">NO</button>
+                  <button class="btn btn-ok">OK</button>
+              </div>
+          </div>
+        `;
+
+      }
+      document.body.appendChild(modalSection);
+
+      const noButton = document.querySelector('.btn-no');
+      const okButton = document.querySelector('.btn-ok');
+      var selects
+      if(client === 0){
+        selects = document.getElementById("inbounds");
+      }
+      
+
+      noButton.addEventListener('click', () => {
+        modalSection.remove();
+      });
+
+      okButton.addEventListener('click', () => {
+        var data
+        if (client === 0){
+          data = JSON.stringify({
+            username: username,
+            password: document.getElementById("password").value,
+            inbound_id: selects.value
+          });
+        }else{
+          data = JSON.stringify({
+            username: username,
+            password: document.getElementById("password").value,
+            inbound_id: inbound_id
+          });
+
+        }
+        
+
+        console.log(data)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log('Success:', JSON.parse(xhr.responseText));
+            if (JSON.parse(xhr.responseText)["status"] === true){
+              window.open("/", "_self")
+              modalSection.remove();
+            }
+            else{
+              alert(JSON.parse(xhr.responseText)["error"]);
+            }
+          } else if (xhr.readyState === 4) {
+            console.error('Error:', xhr.statusText);
+            alert('An error occurred while submitting data.');
+          }
+        };
+
+        xhr.send(data);
+        
+      });
+    }
+  </script>
 
   <script>
     // انتخاب المان‌های مورد نیاز
@@ -620,14 +795,14 @@
 
   <script>
     // انتخاب المان‌های مورد نیاز
-    function add_admin_wallet(admin_id, url) {
+    function add_admin_wallet(admin_id, action, url) {
       const modalSection = document.createElement('section');
       modalSection.className = 'new_pop';
     
       modalSection.innerHTML = `
         <div class="login-container">
             <div class="header-pop">
-                <div class="title">Add price to Admin's Wallet</div>
+                <div class="title">${action === "add" ? "Add price to Admin's Wallet" : "Reduce price from Admin's Wallet"}</div>
             </div>
             
             <div class="form-group">
@@ -653,7 +828,7 @@
 
       okButton.addEventListener('click', () => {
         const data = JSON.stringify({
-          price: document.getElementById("price").value,
+          price:  action === "add" ? parseFloat(document.getElementById("price").value) : - parseFloat(document.getElementById("price").value),
           admin_id: admin_id
         });
 
