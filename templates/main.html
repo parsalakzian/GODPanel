@@ -14,8 +14,8 @@
     }
 
     body {
-      background-color: #2c3e60;
-      color: white;
+      background-color: #240046; /* Darker Purple Background */
+      color: #e2e8f0; /* Lighter text color */
       overflow: hidden;
     }
 
@@ -57,9 +57,10 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      background: #415c88;
+      background: #5600AC; /* Primary Purple */
       padding: 5px 10px;
       border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .wallet img {
@@ -68,9 +69,9 @@
     }
 
     .section {
-      background: linear-gradient(to bottom, #6a91e2, #1ea56c);
-      border-radius: 20px;
-      padding: 15px;
+      background: #3c0078; /* Medium Dark Purple */
+      border-radius: 15px; /* Slightly less rounded */
+      padding: 20px; /* More padding */
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
@@ -81,34 +82,35 @@
 
     .news-box {
       height: 100px;
-      background: linear-gradient(to bottom, #6a91e2, #1ea56c);
-      padding: 10px;
-      border-radius: 20px;
+      background: linear-gradient(135deg, #5600AC, #007bff); /* Purple to Blue Gradient */
+      padding: 15px;
+      border-radius: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+      color: #ffffff; /* Ensure text is white */
     }
 
     .totals {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
+      display: grid; /* Use grid for better alignment */
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
     }
 
     .totals div {
-      flex: 1;
       text-align: center;
-      border-radius: 20px;
-      padding: 10px;
+      border-radius: 10px; /* Less rounded */
+      padding: 12px;
       font-weight: bold;
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      color: #ffffff; /* Ensure text is white */
     }
 
-    .total { background: #2ecc71; }
-    .online { background: #3498db; }
-    .expired { background: #e74c3c; }
+    .online { background: #007bff; } /* Blue Accent */
+    .total { background: #8A4DD4; } /* Lighter Purple */
+    .expired { background: #e74c3c; } /* Keep Red */
 
     .user-header {
       display: flex;
@@ -133,9 +135,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #3b4c74;
-      padding: 8px;
-      border-radius: 20px;
+      background: #007bff; /* Blue Accent */
+      padding: 8px 12px;
+      border-radius: 10px; /* Consistent rounding */
       margin-bottom: 10px;
     }
 
@@ -144,7 +146,39 @@
       background: transparent;
       border: none;
       outline: none;
-      color: white;
+      color: black; /* Changed text color to black */
+    }
+
+    .search input::placeholder { /* Style the placeholder text */
+      color: #888; /* Set placeholder color to gray */
+      font-weight: bolder;
+    }
+
+    .header-icon {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      fill: #ffffff; /* Set fill color to white */
+    }
+
+    .wallet-icon {
+      width: 20px;
+      height: 20px;
+      fill: #ffffff; /* Set fill color to white */
+      margin-right: 3px;
+    }
+
+    .action-icon {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      fill: #ffffff; /* Set fill color to white */
+    }
+
+    .search-icon {
+      width: 20px;
+      height: 20px;
+      fill: #ffffff; /* Set fill color to white */
     }
 
     .search img {
@@ -164,45 +198,60 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #304471;
-      padding: 10px;
-      border-radius: 15px;
+      background: #48008E; /* Slightly lighter dark purple */
+      padding: 10px 15px;
+      border-radius: 10px; /* Consistent rounding */
+      transition: background-color 0.2s ease;
+    }
+
+    .user-item:hover {
+      background: #5600AC; /* Primary Purple on hover */
+      color: #ffffff;
     }
 
     .user-item span.status {
-      font-size: 12px;
-      padding: 3px 6px;
-      border-radius: 10px;
-      background: #555;
+      font-size: 11px; /* Slightly smaller */
+      padding: 4px 8px; 
+      /* More padding */
+      border-radius: 8px;
       margin-right: 5px;
+      font-weight: bold;
     }
 
     .status.online {
-      background: #2ecc71;
+      background: #007bff; /* Blue Accent */
+      color: #ffffff;
     }
 
     .status.offline {
-      background: #c0392b;
+      background: #e74c3c; /* Red */
+      color: #ffffff;
     }
 
     .user-actions {
       display: flex;
       align-items: center;
       gap: 8px;
+      font-weight: bold;
     }
 
     .user-actions span {
-      padding: 3px 6px;
-      border-radius: 10px;
-      font-size: 12px;
+      padding: 4px 8px; /* More padding */
+      border-radius: 8px;
+      font-size: 11px; /* Slightly smaller */
+      color: #ffffff;
+      font-weight: bold;
+      font-weight: bold;
     }
 
     .user-actions .green {
-      background: #2ecc71;
+      background: #007bff; /* Blue Accent */
+      color: #ffffff;
     }
 
     .user-actions .red {
-      background: #e74c3c;
+      background: #e74c3c; /* Red */
+      color: #ffffff;
     }
 
     .user-actions img {
@@ -231,25 +280,26 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: rgba(0, 0, 0, 0.719);
+      background-color: rgba(36, 0, 70, 0.85); /* Darker Purple transparent overlay */
     }
     .modal {
-      background: linear-gradient(160deg, #23c469, #1d3c8f);
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
       padding: 20px;
       width: 90%;
       max-width: 300px;
       text-align: center;
-      color: white;
+      color: #ffffff;
     }
     .modal-header {
-      background-color: #2d3d8b;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      font-size: 16px;
+      background-color: #007bff; /* Blue Accent */
+      color: #ffffff; /* White text on blue */
+      padding: 10px 15px;
+      border-radius: 8px 8px 0 0; /* Round top corners only */
+      margin: -20px -20px 16px -20px; /* Extend to edges */
+      font-size: 18px;
+      font-weight: bold;
     }
     .modal-content {
       text-align: left;
@@ -271,13 +321,20 @@
       font-size: 14px;
       color: white;
       cursor: pointer;
-      margin: 0 4px;
+      margin: 0 5px;
+      transition: background-color 0.2s ease;
     }
     .btn-ok {
-      background-color: #23c469;
+      background-color: #007bff; /* Blue Accent */
+    }
+    .btn-ok:hover {
+      background-color: #0056b3; /* Darker Blue */
     }
     .btn-no {
-      background-color: #e02c2c;
+      background-color: #6b7280; /* Grey */
+    }
+    .btn-no:hover {
+      background-color: #4b5563; /* Darker Grey */
     }
     @media (max-width: 400px) {
       .modal {
@@ -305,13 +362,13 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: rgba(0, 0, 0, 0.719);
+      background-color: rgba(36, 0, 70, 0.85); /* Darker Purple transparent overlay */
     }
     /* Main Container */
     .config_container {
-        background-color: #1a202c; /* Slightly lighter dark color for the container */
-        border-radius: 16px;
-        padding: 20px;
+        background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
+        border-radius: 12px;
+        padding: 25px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         width: 300px;
         text-align: center;
@@ -319,9 +376,9 @@
 
     /* White Box */
     .white-box {
-        background-color: #f0f0f0; /* Light gray color */
-        height: 260px;
-        border-radius: 8px;
+        background-color: #ffffff; /* White background for QR */
+        height: 250px; /* Slightly smaller */
+        border-radius: 10px;
         position: relative;
         display: flex;
         justify-content: center;
@@ -339,12 +396,13 @@
     .config_container input[type="text"] {
         width: 100%;
         padding: 10px;
-        margin-top: 10px;
-        border: none;
+        margin-top: 15px;
+        border: none; /* Remove border */
         border-radius: 8px;
-        background-color: #2b3442; /* Darker shade for input field */
-        color: white;
-        font-size: 16px;
+        background-color: #48008E; /* Medium Dark Purple */
+        color: #e2e8f0; /* Lighter text */
+        font-size: 14px;
+        text-align: center;
     }
 
     /* Buttons */
@@ -357,23 +415,25 @@
         font-size: 16px;
         color: white;
         transition: background-color 0.3s ease;
+        display: flex; /* Use flex for buttons */
+        justify-content: space-around; /* Space out buttons */
     }
 
     .copy-btn {
-        background-color: #2ecc71; /* Green color for Copy button */
+        background-color: #007bff; /* Blue Accent */
     }
 
     .qr-btn {
-        background-color: #27ae60; /* Slightly darker green for QR Code button */
+        background-color: #8A4DD4; /* Lighter Purple */
     }
 
     /* Hover Effects */
     .copy-btn:hover {
-        background-color: #27ae60;
+        background-color: #0056b3; /* Darker Blue */
     }
 
     .qr-btn:hover {
-        background-color: #229954;
+        background-color: #7038b8; /* Darker Light Purple */
     }
 </style>
 </head>
@@ -381,9 +441,9 @@
   <div class="container">
     <div class="right-panel">
       <div class="header">
-        <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/logout-icon@2x.png" alt="Logout" onclick="window.open('/logout', '_self')">
+        <object type="image/svg+xml" data="/static/icons/LogOut Icon.svg" class="header-icon" onclick="window.open('/logout', '_self')"></object>
         <div class="wallet">
-          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/wallet-icon@2x.png" alt="Wallet">
+          <object type="image/svg+xml" data="/static/icons/Wallet Icon.svg" class="wallet-icon"></object>
           <span>{{data["wallet"]}}T</span>
         </div>
       </div>
@@ -405,19 +465,24 @@
         <div class="user-header">
           <div class="section-title">Users</div>
           <div style="padding-right: 10px;" class="actions">
-            <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/plus-icon@2x.png" alt="New" onclick="new_pop('New User', '{{data.next_user}}', '', '', '/new')">
+            <object type="image/svg+xml" data="/static/icons/Plus Icon.svg" class="action-icon" onclick="new_pop('New User', '{{data.next_user}}', '', '', '/new')"></object>
           </div>
         </div>
         <div class="search">
           <input id="searchInput" type="text" placeholder="Search" oninput="filterUsers()">
-          <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/search-icon@2x.png" alt="Search">
+          <object type="image/svg+xml" data="/static/icons/Search Icon.svg" class="search-icon"></object>
         </div>
         <div class="user-list">
           {% for user in data["configs"] %}
             <div class="user-item">
               <span class="user_name">{{user.username}}</span>
               <div class="user-actions">
-                <span class="status online">{{user["status"]}}</span>
+                {% if user["status"] == "Online" %}
+                  <span class="status online">{{user["status"]}}</span>
+                {% else %}
+                  <span class="status offline">{{user["status"]}}</span>
+                {% endif %}
+                
                 {% if user["traffic"] > 0 %}
                   <span class="green">{{user["traffic"]}}G</span>
                 {% else %}
@@ -429,11 +494,11 @@
                 {% else %}
                   <span class="red">{{user["doration"]}}D</span>
                 {% endif %}
-                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/refresh-icon-1@2x.png" alt="Renew" onclick="new_pop('Renew User', '{{user.username}}', '{{user.id}}', '{{user.inbound_id}}', '/renew')">
-                <img src="https://cdn.animaapp.com/projects/67f3ab8fd4e5d7259fddd384/releases/67f3b86e1f435018d7ee412a/img/download-icon@2x.png" alt="Download" onclick="config_pop('{{user.id}}', '{{user.inbound_id}}', '{{user.username}}')">
+                <object type="image/svg+xml" data="/static/icons/Refresh Icon.svg" class="action-icon" onclick="new_pop('Renew User', '{{user.username}}', '{{user.id}}', '{{user.inbound_id}}', '/renew')"></object>
+                <object type="image/svg+xml" data="/static/icons/Download Icon.svg" class="action-icon" onclick="config_pop('{{user.id}}', '{{user.inbound_id}}', '{{user.username}}')"></object>
               </div>
             </div>
-           {% endfor %} 
+           {% endfor %}
         </div>
       </div>
     </div>
