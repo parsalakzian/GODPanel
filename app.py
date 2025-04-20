@@ -35,8 +35,10 @@ def index():
     if "UUID" in session and "username" in session:
         try: 
             db = Database()
-            server = db.get_servers().get("data")[0]
-            sn = SanaeiAPI(server.get("username"), server.get("password"), server.get("url"))
+            server = db.get_servers().get("data")
+            if len(server) == 0:
+                server = [{"username":"", "password":"", "url":""}]
+            sn = SanaeiAPI(server[0].get("username"), server[0].get("password"), server[0].get("url"))
             admin_inbound_id = db.get_admins_inbound_id(session.get("UUID"))["data"]["inbound_id"]
             dd = sn.get_admin_clients(admin_inbound_id, session.get("UUID"))
             # print(dd)

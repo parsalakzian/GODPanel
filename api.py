@@ -194,7 +194,7 @@ class SanaeiAPI():
         # Your Remark
         inboundSetting = json.loads(stream)
     
-        remark = f"New {email}"
+        remark = f"GOD {email}"
 
         path = None
         host = "none"
