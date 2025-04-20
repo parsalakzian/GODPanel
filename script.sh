@@ -3,7 +3,7 @@
 set -e
 
 PROJECT_NAME="GODPanel"
-GITHUB_REPO="https://github.com/parsalakzian/GODPanel.git"
+GITHUB_REPO="https://github.com/parsalakzian/GODPanelCode.git"
 INSTALL_DIR="/root/$PROJECT_NAME"
 PYTHON_VERSION="3.12.8"
 ENV_NAME="$PROJECT_NAME-env"
