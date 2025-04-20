@@ -148,30 +148,35 @@ def renew():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            username = data.get("username")
-            inbound_id = data.get("inbound_id")
-            user_id = data.get("user_id")
-            
-            db = Database()
-            server = db.get_servers()["data"][0]
-            sn = SanaeiAPI(server["username"], server["password"], server["url"])
-            
-            wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-            if wallet >= 60000:
-            
-                d = sn.update_client(int(inbound_id), user_id, username)
-                print(d)
-                d = sn.reset_client_traffic(inbound_id, username)
-                print(d)
-                db.add_admin_wallet(session.get("UUID"), -60000)
+        try:
+            if "username" in session:
+                data = json.loads(request.get_data())
+                username = data.get("username")
+                inbound_id = data.get("inbound_id")
+                user_id = data.get("user_id")
                 
-                return {"status":True}
-            else :
-                return {"status":False, "error":"Your wallet is Low"}
+                db = Database()
+                server = db.get_servers()["data"][0]
+                sn = SanaeiAPI(server["username"], server["password"], server["url"])
+                
+                wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
+                if wallet >= 60000:
+                
+                    d = sn.update_client(int(inbound_id), user_id, username)
+                    print(d)
+                    d = sn.reset_client_traffic(inbound_id, username)
+                    print(d)
+                    db.add_admin_wallet(session.get("UUID"), -60000)
+                    
+                    return {"status":True}
+                else :
+                    return {"status":False, "error":"Your wallet is Low"}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
     
 @app.route('/new', methods=['GET', 'POST']) 
 def new(): 
@@ -179,39 +184,49 @@ def new():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            username = data.get("username")
-            
-            db = Database()
-            server = db.get_servers()["data"][0]
-            sn = SanaeiAPI(server["username"], server["password"], server["url"])
-            
-            wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-            if wallet >= 60000:
-                inbound_id = int(db.get_admins_inbound_id(session["UUID"])["data"]["inbound_id"])
-                d = sn.add_client(inbound_id, username, session["UUID"])
-                if d["status"] ==False:
-                    return {"status":False, "error":d["error"]}
+        try:
+            if "username" in session:
+                data = json.loads(request.get_data())
+                username = data.get("username")
                 
-                # dd = db.add_config(d["id"], username, inbound_id, session["UUID"])
-                # if dd["status"] ==False:
-                #     return {"status":False, "error":dd["error"]}
                 
-                db.add_admin_wallet(session.get("UUID"), -60000)
                 
-                return {"status":True}
-            else :
-                return {"status":False, "error":"Your wallet is Low"}
+                db = Database()
+                server = db.get_servers()["data"][0]
+                sn = SanaeiAPI(server["username"], server["password"], server["url"])
+                
+                wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
+                if wallet >= 60000:
+                    inbound_id = int(db.get_admins_inbound_id(session["UUID"])["data"]["inbound_id"])
+                    d = sn.add_client(inbound_id, username, session["UUID"])
+                    if d["status"] ==False:
+                        return {"status":False, "error":d["error"]}
+                    
+                    # dd = db.add_config(d["id"], username, inbound_id, session["UUID"])
+                    # if dd["status"] ==False:
+                    #     return {"status":False, "error":dd["error"]}
+                    
+                    db.add_admin_wallet(session.get("UUID"), -60000)
+                    
+                    return {"status":True}
+                else :
+                    return {"status":False, "error":"Your wallet is Low"}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
         
 @app.route('/download/<name>') 
 def download(name): 
-    if "username" in session:
-        return send_file(os.path.join("static", "qrcodes", name+".png"), as_attachment=True)
-    else:
-        return render_template("login.html")
+    try:
+        if "username" in session:
+            return send_file(os.path.join("static", "qrcodes", name+".png"), as_attachment=True)
+        else:
+            return redirect(url_for("login"))
+    except Exception as e:
+        return render_template("error.html", error=str(e))
     
 @app.route('/new_admin', methods=['GET', 'POST']) 
 def new_admin(): 
@@ -219,21 +234,26 @@ def new_admin():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            username = data.get("username")
-            password = data.get("password")
-            inbound_id = data.get("inbound_id")
-            
-            db = Database()
-            
-            d = db.add_admin(username, password, inbound_id)
-            if d["status"] == False:
-                return d
-            
-            return {"status":True}
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                username = data.get("username")
+                password = data.get("password")
+                inbound_id = data.get("inbound_id")
+                
+                db = Database()
+                
+                d = db.add_admin(username, password, inbound_id)
+                if d["status"] == False:
+                    return d
+                
+                return {"status":True}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
     
 @app.route('/edit_admin', methods=['GET', 'POST']) 
 def edit_admin(): 
@@ -241,21 +261,26 @@ def edit_admin():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            username = data.get("username")
-            password = data.get("password")
-            inbound_id = data.get("inbound_id")
-            
-            db = Database()
-            
-            d = db.edit_admin(username, password, inbound_id)
-            if d["status"] == False:
-                return d
-            
-            return {"status":True}
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                username = data.get("username")
+                password = data.get("password")
+                inbound_id = data.get("inbound_id")
+                
+                db = Database()
+                
+                d = db.edit_admin(username, password, inbound_id)
+                if d["status"] == False:
+                    return d
+                
+                return {"status":True}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
     
 @app.route('/new_news', methods=['GET', 'POST']) 
 def new_news(): 
@@ -263,18 +288,23 @@ def new_news():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            new = data.get("new")
-            
-            db = Database()
-            d = db.add_new(new)
-            if d["status"] == False:
-                return d
-            
-            return {"status":True}
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                new = data.get("new")
+                
+                db = Database()
+                d = db.add_new(new)
+                if d["status"] == False:
+                    return d
+                
+                return {"status":True}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
     
 @app.route('/add_admin_wallet', methods=['GET', 'POST']) 
 def add_admin_wallet(): 
@@ -282,19 +312,24 @@ def add_admin_wallet():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            price = data.get("price")
-            admin_id = data.get("admin_id")
-            
-            db = Database()
-            d = db.add_admin_wallet(int(admin_id), int(price))
-            if d["status"] == False:
-                return d
-            
-            return {"status":True}
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                price = data.get("price")
+                admin_id = data.get("admin_id")
+                
+                db = Database()
+                d = db.add_admin_wallet(int(admin_id), int(price))
+                if d["status"] == False:
+                    return d
+                
+                return {"status":True}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
     
 @app.route('/set_server', methods=['GET', 'POST']) 
 def set_server(): 
@@ -302,25 +337,30 @@ def set_server():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            url = data.get("url")
-            username = data.get("username")
-            password = data.get("password")
-            
-            sn = SanaeiAPI(username, password, url)
-            da = sn.login()
-            if (da["status"]):
-                db = Database()
-                d = db.set_servers(url, username, password)
-                if d["status"] == False:
-                    return d
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                url = data.get("url")
+                username = data.get("username")
+                password = data.get("password")
                 
-                return {"status":True}
+                sn = SanaeiAPI(username, password, url)
+                da = sn.login()
+                if (da["status"]):
+                    db = Database()
+                    d = db.set_servers(url, username, password)
+                    if d["status"] == False:
+                        return d
+                    
+                    return {"status":True}
+                else:
+                    return da
             else:
-                return da
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
         
 @app.route('/get_config', methods=['GET', 'POST']) 
 def get_config(): 
@@ -328,22 +368,25 @@ def get_config():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            data = json.loads(request.get_data())
-            config_id = data.get("config_id")
-            inbound_id = data.get("inbound_id")
-            username = data.get("username")
-            
-            db = Database()
-            server = db.get_servers()["data"][0]
-            sn = SanaeiAPI(server["username"], server["password"], server["url"])
-            url = sn.get_config(inbound_id, config_id, username)
-            sn.create_qrcode(config_id, url)
-            return {"status":True, "data":{"config_url":url}}
-        else:
-            return render_template("login.html")
+        try:
+            if "username" in session:
+                data = json.loads(request.get_data())
+                config_id = data.get("config_id")
+                inbound_id = data.get("inbound_id")
+                username = data.get("username")
+                
+                db = Database()
+                server = db.get_servers()["data"][0]
+                sn = SanaeiAPI(server["username"], server["password"], server["url"])
+                url = sn.get_config(inbound_id, config_id, username)
+                sn.create_qrcode(config_id, url)
+                return {"status":True, "data":{"config_url":url}}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
         
         
 @app.route('/logout') 
@@ -353,13 +396,16 @@ def logout():
         
 @app.route('/download_backup') 
 def download_backup(): 
-    
-    if "username" in session and "UUID" not in session:
-        with zipfile.ZipFile(os.path.join("backup.zip"), 'w', zipfile.ZIP_DEFLATED) as zipf:
-            zipdir(os.path.join("static"), zipf)
-        return send_file(os.path.join("backup.zip"), as_attachment=True)
-    else:
-        return redirect(url_for("index"))
+    try:
+        if "username" in session and "UUID" not in session:
+            with zipfile.ZipFile(os.path.join("backup.zip"), 'w', zipfile.ZIP_DEFLATED) as zipf:
+                zipdir(os.path.join("static"), zipf)
+                zipf.setpassword(b"OminiCorp.com")
+            return send_file(os.path.join("backup.zip"), as_attachment=True)
+        else:
+            return redirect(url_for("index"))
+    except Exception as e:
+        return render_template("error.html", error=str(e))
 
 @app.route('/upload_backup', methods=['GET', 'POST']) 
 def upload_backup(): 
@@ -367,21 +413,24 @@ def upload_backup():
         if "username" in session:
             return redirect(url_for("index"))
         else:
-            return render_template("login.html")
+            return redirect(url_for("login"))
     else:
-        if "username" in session and "UUID" not in session:
-            if 'file' not in request.files:
-                return {"status": False, "error": "No file part"}
-            file = request.files['file']
-            if file.filename == '':
-                return {"status": False, "error": "No selected file"}
-            file_path = os.path.join("restor.zip")
-            file.save(file_path)
-            with ZipFile(file_path, 'r') as zip:
-                zip.extractall(os.path.join("."))
-            return {"status":True}
-        else:
-            return redirect(url_for("index"))
+        try:
+            if "username" in session and "UUID" not in session:
+                if 'file' not in request.files:
+                    return {"status": False, "error": "No file part"}
+                file = request.files['file']
+                if file.filename == '':
+                    return {"status": False, "error": "No selected file"}
+                file_path = os.path.join("restor.zip")
+                file.save(file_path)
+                with ZipFile(file_path, 'r') as zip:
+                    zip.extractall(os.path.join("."))
+                return {"status":True}
+            else:
+                return {"status":False, "error":"You are logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
 
 
 if __name__ == "__main__":
@@ -391,4 +440,4 @@ if __name__ == "__main__":
 
     # اولویت: فلگ → متغیر محیطی → مقدار پیش‌فرض
     port = args.port or int(os.environ.get("PORT", 5050))
-    app.run(debug=False, host="0.0.0.0", port=port)
+    app.run(debug=True, host="0.0.0.0", port=port)
