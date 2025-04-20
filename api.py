@@ -456,10 +456,64 @@ class SanaeiAPI():
             return data["error"]
         return self.GetConfig(inbound["streamSettings"], uid, username, inbound["port"], inbound["protocol"], self.server)
     
-    def create_qrcode(self, uid, config):
-        img = qrcode.make(config)
-        img.save(os.path.join("static", "qrcodes", f'{uid}.png'))
+    def download_font_if_needed(self, font_path):
+        if not os.path.exists(font_path):
+            print("دانلود فونت DejaVuSans.ttf ...")
+            url = "https://github.com/prawnpdf/prawn/raw/refs/heads/master/data/fonts/DejaVuSans.ttf"
+            urllib.request.urlretrieve(url, font_path)
+            print("فونت دانلود شد.")
+
+    def create_qrcode(self, uid, config, text="Your Text Here"):
         
+        name = f"GOD | {text}"
+        # مسیر محلی برای ذخیره فونت
+        font_path = os.path.join(os.getcwd(), "DejaVuSans.ttf")
+    
+        # دانلود فونت در صورت نیاز
+        self.download_font_if_needed(font_path)
+    
+        # بارگذاری فونت با اندازه بزرگ
+        font = ImageFont.truetype(font_path, size=90)
+    
+        # تولید QR Code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=20,
+            border=4,
+        )
+        qr.add_data(config)
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+    
+        # محاسبه اندازه متن
+        dummy_img = Image.new("RGB", (1, 1))
+        draw = ImageDraw.Draw(dummy_img)
+        text_bbox = draw.textbbox((0, 0), name, font=font)
+        text_width = text_bbox[2] - text_bbox[0]
+        text_height = text_bbox[3] - text_bbox[1]
+    
+        # آماده‌سازی تصویر نهایی
+        padding_x = 60
+        padding_y = 60
+        new_width = max(qr_img.width, text_width) + padding_x
+        new_height = qr_img.height + text_height + padding_y
+    
+        final_img = Image.new("RGB", (new_width, new_height), "white")
+        qr_x = (new_width - qr_img.width) // 2
+        final_img.paste(qr_img, (qr_x, padding_y // 2))
+    
+        # رسم متن
+        draw = ImageDraw.Draw(final_img)
+        text_x = (new_width - text_width) // 2
+        text_y = qr_img.height + padding_y // 2
+        draw.text((text_x, text_y), text, font=font, fill="black")
+    
+        # ذخیره تصویر
+        output_path = os.path.join("static", "qrcodes", f'{uid}.png')
+        final_img.save(output_path)
+        return output_path
+    
     def get_admin_clients(self, inbound_id, admin_id):
         data = self.get_inbound(inbound_id)
         if data["status"]:
