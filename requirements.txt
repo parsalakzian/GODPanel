@@ -7,3 +7,4 @@ qrcode
 qrcode-styled
 requests
 urllib3
+reportlab

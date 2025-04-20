@@ -121,8 +121,8 @@ def login():
         else:
             return render_template("login.html")
     else:
-        usernames = ["padmin"]
-        passwords = ["padmin"]
+        usernames = ["admin.json"]
+        passwords = ["admin.json"]
         
         with open(os.path.join("admin.json"), "r") as f:
             data = json.loads(f.read())

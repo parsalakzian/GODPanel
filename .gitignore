@@ -1,6 +1,11 @@
 /.venv
 /__pycache__
 admin.json
-/static/*
+/static/qrcodes
+/static/databse.db
+/static/reports
 cookie.json
 *.zip
+*.god
+/build
+/dist
