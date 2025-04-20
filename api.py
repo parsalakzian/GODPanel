@@ -471,7 +471,7 @@ class SanaeiAPI():
 
     def create_qrcode(self, uid, config, text="Your Text Here"):
         
-        name = f"GOD | {text}"
+        name = f"GOD {text}"
         # مسیر محلی برای ذخیره فونت
         font_path = os.path.join(os.getcwd(), "DejaVuSans.ttf")
     
