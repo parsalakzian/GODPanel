@@ -9,3 +9,4 @@ cookie.json
 *.god
 /build
 /dist
+bs.sh
