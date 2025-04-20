@@ -14,6 +14,8 @@ if os.path.exists(os.path.join("static")) == False:
 
 if os.path.exists(os.path.join("static", "qrcodes")) == False:
     os.mkdir(os.path.join("static", "qrcodes"))
+if os.path.exists(os.path.join("static", "reports")) == False:
+    os.mkdir(os.path.join("static", "reports"))
 
 app = Flask(__name__)
 app.secret_key = 'abcd12344321dcba'
@@ -37,7 +39,7 @@ def index():
             sn = SanaeiAPI(server.get("username"), server.get("password"), server.get("url"))
             admin_inbound_id = db.get_admins_inbound_id(session.get("UUID"))["data"]["inbound_id"]
             dd = sn.get_admin_clients(admin_inbound_id, session.get("UUID"))
-            print(dd)
+            # print(dd)
             if dd.get("status"):
                 d = dd["data"]["clients"]
                 onlines = dd["data"]["onlines"]
@@ -165,10 +167,24 @@ def renew():
                 if wallet >= 60000:
                 
                     d = sn.update_client(int(inbound_id), user_id, username)
-                    print(d)
+                    if d["status"] == False:
+                        return d
                     d = sn.reset_client_traffic(inbound_id, username)
-                    print(d)
-                    db.add_admin_wallet(session.get("UUID"), -60000)
+                    if d["status"] == False:
+                        return d
+                    
+                    old = db.get_admins_wallet(session["UUID"])
+                    if old["status"] == False:
+                        return old
+                    dd = db.add_admin_wallet(session["UUID"], -60000)
+                    if dd["status"] == False:
+                        return dd
+                    new = db.get_admins_wallet(session["UUID"])
+                    if new["status"] == False:
+                        return new
+                    res = db.add_report(session["UUID"], f"Renew {username}", -60000, new["data"]["wallet"], old["data"]["wallet"])
+                    if res["status"] == False:
+                        return res
                     
                     return {"status":True}
                 else :
@@ -208,7 +224,18 @@ def new():
                     # if dd["status"] ==False:
                     #     return {"status":False, "error":dd["error"]}
                     
-                    db.add_admin_wallet(session.get("UUID"), -60000)
+                    old = db.get_admins_wallet(session["UUID"])
+                    if old["status"] == False:
+                        return old
+                    dd = db.add_admin_wallet(session["UUID"], -60000)
+                    if dd["status"] == False:
+                        return dd
+                    new = db.get_admins_wallet(session["UUID"])
+                    if new["status"] == False:
+                        return new
+                    res = db.add_report(session["UUID"], f"New {username}", -60000, new["data"]["wallet"], old["data"]["wallet"])
+                    if res["status"] == False:
+                        return res
                     
                     return {"status":True}
                 else :
@@ -321,9 +348,18 @@ def add_admin_wallet():
                 admin_id = data.get("admin_id")
                 
                 db = Database()
+                old = db.get_admins_wallet(admin_id)
+                if old["status"] == False:
+                    return old
                 d = db.add_admin_wallet(int(admin_id), int(price))
                 if d["status"] == False:
                     return d
+                new = db.get_admins_wallet(admin_id)
+                if new["status"] == False:
+                    return new
+                res = db.add_report(admin_id, "Set Admin Wallet", price, new["data"]["wallet"], old["data"]["wallet"])
+                if res["status"] == False:
+                    return res
                 
                 return {"status":True}
             else:
@@ -381,8 +417,43 @@ def get_config():
                 server = db.get_servers()["data"][0]
                 sn = SanaeiAPI(server["username"], server["password"], server["url"])
                 url = sn.get_config(inbound_id, config_id, username)
-                sn.create_qrcode(config_id, url)
+                sn.create_qrcode(config_id, url, username)
                 return {"status":True, "data":{"config_url":url}}
+            else:
+                return {"status":False, "error":"You are not logged in"}
+        except Exception as e:
+            return {"status":False, "error":str(e)}
+        
+        
+@app.route('/get_admin_report', methods=['GET', 'POST']) 
+def get_admin_report(): 
+    if request.method == "GET":
+        if "username" in session:
+            return redirect(url_for("index"))
+        else:
+            return redirect(url_for("login"))
+    else:
+        try:
+            if "username" in session and "UUID" not in session:
+                data = json.loads(request.get_data())
+                admin_id = data.get("admin_id")
+                admin_username = data.get("admin_username")
+                
+                db = Database()
+                server = db.get_servers()["data"][0]
+                sn = SanaeiAPI(server["username"], server["password"], server["url"])
+                d = db.get_admins_report(admin_id)
+                if d["status"]:
+                    data = d["data"]["reports"]
+                    if len(data) == 0:
+                        return {"status":False, "error":"No report found"}
+                    dd = sn.generate_pdf(data, admin_username)
+                    if dd["status"]:
+                        return dd
+                    else:
+                        return {"status":False, "error":dd["error"]}
+                else:
+                    return {"status":False, "error":d["error"]}
             else:
                 return {"status":False, "error":"You are not logged in"}
         except Exception as e:

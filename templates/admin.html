@@ -465,7 +465,12 @@
               <span class="red">{{admin["wallet"]}}T</span>
               {% endif %}
               <span class="green">{{admin["total"]}}</span>
-
+              
+              <img
+                src="/static/icons/Report Icon.svg"
+                class="action-icon"
+                onclick="report(`{{admin.admin_id}}`, '{{admin.username}}', '/get_admin_report')"
+              />
               
               <img
                 src="/static/icons/Edit Icon.svg"
@@ -792,6 +797,40 @@
     }
   </script>
 
+  <script>
+    // انتخاب المان‌های مورد نیاز
+    function report(admin_id, admin_username, url) {
+
+      const data = JSON.stringify({
+        admin_id: admin_id,
+        admin_username: admin_username
+      });
+
+      console.log(data)
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          console.log('Success:', JSON.parse(xhr.responseText));
+          if (JSON.parse(xhr.responseText)["status"] === true){
+            window.open(JSON.parse(xhr.responseText)["data"]["file_path"], "_self")
+          }
+          else{
+            alert(JSON.parse(xhr.responseText)["error"]);
+          }
+        } else if (xhr.readyState === 4) {
+          console.error('Error:', xhr.statusText);
+          alert('An error occurred while submitting data.');
+        }
+      };
+
+      xhr.send(data);
+        
+      
+    }
+  </script>
 
   <script>
     // انتخاب المان‌های مورد نیاز

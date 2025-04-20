@@ -364,6 +364,59 @@ class Database():
             return {"status":True}
         except Exception as error:
             return {"status":False, "error":self.errors.get(str(error), str(error))}
+        
+    def add_report(self, admin_id:int, operation:str, operation_price:int,wallet_after_operation:int, wallet_before_operation:int):
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS reports (
+                    admin_id INT NOT NULL,
+                    operation TEXT NOT NULL,
+                    operation_price INT NOT NULL,
+                    wallet_after_operation INT NOT NULL,
+                    wallet_before_operation INT NOT NULL
+                )
+            ''')
+            
+            cursor.execute('''
+                INSERT OR FAIL INTO reports (admin_id, operation, operation_price, wallet_after_operation, wallet_before_operation) VALUES (?, ?, ?, ?, ?)
+            ''', (admin_id, operation, operation_price, wallet_after_operation, wallet_before_operation))
+            
+            conn.commit()
+            conn.close()
+            return {"status":True}
+        except Exception as error:
+            return {"status":False, "error":self.errors.get(str(error), str(error))}
+        
+    def get_admins_report(self, admin_id:int):
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS reports (
+                    admin_id INT NOT NULL,
+                    operation TEXT NOT NULL,
+                    operation_price INT NOT NULL,
+                    wallet_after_operation INT NOT NULL,
+                    wallet_before_operation INT NOT NULL
+                )
+            ''')
+            
+            conn.commit()
+            
+            cursor.execute('SELECT * FROM reports WHERE admin_id = ?', (admin_id,))
+            data = cursor.fetchall()
+            conn.close()
+            reports = []
+            for i in data:
+                reports.append([i[1], i[2], i[4], i[3]])
+            
+            return {"status":True, "data":{"reports":reports}}
+        except Exception as error:
+            return {"status":False, "error":str(error)}
 
 # db = Database()
 

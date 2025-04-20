@@ -6,6 +6,12 @@ import os
 import time
 import qrcode
 from urllib.parse import quote
+from PIL import Image, ImageDraw, ImageFont
+import urllib
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.platypus import Table, TableStyle, SimpleDocTemplate
+from reportlab.lib import colors
 
 class SanaeiAPI():
     def __init__(self, username, password, url:str):
@@ -94,7 +100,7 @@ class SanaeiAPI():
         data = requests.get(url=self.url + self.pathes["client_traffic"].format(username), cookies=self.loadCookie())
         if data.json():
             if data.json()["success"]:
-                return {"status":True, "username":username, "traffic":data.json()["obj"]["total"], "expirytime":data.json()["obj"]["expiryTime"]}
+                return {"status":True, "data":int(data.json()["obj"]["total"] - (data.json()["obj"]["up"] + data.json()["obj"]["down"])), }
             else:
                 return {"status":False, "error":data.json()["msg"]}
         else:
@@ -507,7 +513,7 @@ class SanaeiAPI():
         draw = ImageDraw.Draw(final_img)
         text_x = (new_width - text_width) // 2
         text_y = qr_img.height + padding_y // 2
-        draw.text((text_x, text_y), text, font=font, fill="black")
+        draw.text((text_x, text_y), name, font=font, fill="black")
     
         # ذخیره تصویر
         output_path = os.path.join("static", "qrcodes", f'{uid}.png')
@@ -532,6 +538,13 @@ class SanaeiAPI():
                             ext = int((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24)
                         else:
                             ext = - int((cl["expiryTime"])/1000/60/60/24)
+                            
+                        traf = self.get_client_traffic(cl["email"])
+                        traff = 0
+                        if traf["status"]:
+                            traff = traf["data"]
+                        else:
+                            return traf
                         
                         if cl["email"] in onlines:
                             online += 1
@@ -543,7 +556,7 @@ class SanaeiAPI():
                             "username": cl["email"],
                             "inbound_id": inbound_id,
                             "status": "ON" if cl["email"] in onlines else "OFF",
-                            "traffic": int(cl["totalGB"]/1024/1024/1024),
+                            "traffic": int(traff/1024/1024/1024),
                             "doration":ext,
                         })
                     
@@ -559,7 +572,48 @@ class SanaeiAPI():
                     "clients":0
                 }}
         else:
-            return data["error"]
+            return {"status": False, "error":data["error"]}
+        
+    def generate_pdf(self, data:list, filename="wallet_report"):
+        try:
+            # Add header row
+            header = ["Operation", "Operation Price", "Wallet Before", "Wallet After"]
+            table_data = [header] + data
+            
+            # Set up PDF document
+            doc = SimpleDocTemplate(
+                os.path.join("static", "reports", filename + ".pdf"),
+                pagesize=A4,
+                rightMargin=30, leftMargin=30,
+                topMargin=30, bottomMargin=30
+            )
+            
+            # Create a Table
+            table = Table(table_data, colWidths=[120, 120, 120, 120, 120])
+
+            # Style the table
+            style = TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTSIZE", (0, 0), (-1, -1), 10),
+
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ])
+            table.setStyle(style)
+
+            # Build PDF
+            elements = [table]
+            doc.build(elements)
+
+            return {"status": True, "data":{"file_path":os.path.join("static", "reports", filename + ".pdf")}}
+        except Exception as e:
+            return {"status": False, "error": str(e)}
         
                 
 # sn = SanaeiAPI("GOD", "Man.69.MyXras", "http://www.x8ss0.com:443/oxoxo")
