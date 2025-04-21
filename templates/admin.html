@@ -475,7 +475,7 @@
               <img
                 src="/static/icons/Edit Icon.svg"
                 class="action-icon"
-                onclick="edit_pop(`{{data.inbounds}}`, '{{admin.inbound_id}}', '{{admin.total}}', '{{admin.username}}', '/edit_admin')"
+                onclick="edit_pop(`{{data.inbounds}}`, '{{admin.inbound_id}}', '{{admin.total}}', '{{admin.username}}', '{{admin.password}}', '/edit_admin')"
               />
 
               <img
@@ -613,7 +613,7 @@
 
   <script>
     // انتخاب المان‌های مورد نیاز
-    function edit_pop(inboundss, inbound_id, clients, username, url) {
+    function edit_pop(inboundss, inbound_id, clients, username, password, url) {
       const modalSection = document.createElement('section');
       modalSection.className = 'new_pop';
       var inbounds = JSON.parse(inboundss)
@@ -633,7 +633,7 @@
               
               <div class="form-group">
                   <label for="password">Password:</label>
-                  <input type="text" id="password" name="password">
+                  <input type="text" id="password" name="password" value="`+password+`">
               </div>
               
               <div class="form-group">
@@ -662,7 +662,7 @@
               
               <div class="form-group">
                   <label for="password">Password:</label>
-                  <input type="text" id="password" name="password">
+                  <input type="text" id="password" name="password" value="`+password+`">
               </div>
               
               <div class="buttons">
