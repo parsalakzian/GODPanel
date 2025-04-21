@@ -455,9 +455,8 @@
           {% for admin in data["admins"] %}
           <div class="user-item">
             <span class="user_name"
-              >{{admin["username"]}} | {{admin["password"]}} |
-              {{admin.inbound}}</span
-            >
+              >{{admin["username"]}} | {{admin.inbound}}
+            </span>
             <div class="user-actions">
               {% if admin["int_wallet"] > 59999 %}
               <span class="green">{{admin["wallet"]}}T</span>
