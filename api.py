@@ -194,7 +194,7 @@ class SanaeiAPI():
         # Your Remark
         inboundSetting = json.loads(stream)
     
-        remark = f"GOD {email}"
+        remark = f"New {email}"
 
         path = None
         host = "none"
@@ -471,7 +471,7 @@ class SanaeiAPI():
 
     def create_qrcode(self, uid, config, text="Your Text Here"):
         
-        name = f"GOD {text}"
+        name = f"New {text}"
         # مسیر محلی برای ذخیره فونت
         font_path = os.path.join(os.getcwd(), "DejaVuSans.ttf")
     
