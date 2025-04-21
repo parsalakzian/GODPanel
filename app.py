@@ -83,7 +83,7 @@ def admin():
                         da = []
                     
                     for admin in admins:
-                        dd = db.get_admins_configs(admin["id"])
+                        dd = sn.get_admin_clients(admin["inbound_id"], admin["id"])
                         d.append({
                             "admin_id":admin["id"],
                             "username":admin["username"],
@@ -92,7 +92,7 @@ def admin():
                             "inbound_id":admin["inbound_id"],
                             "wallet":f"{int(admin["wallet"]):,}",
                             "int_wallet":admin["wallet"],
-                            "total":len(dd["data"]),
+                            "total":len(dd["data"]["clients"]),
                         })
                     
                     data = {"admin_id": session.get("UUID"), "admins": d, "new": db.get_new().get("data")["new"], "inbounds": json.dumps(da), "server_status":True}
