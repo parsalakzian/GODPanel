@@ -108,7 +108,7 @@ class Database():
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            
+             
             
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS admins (
