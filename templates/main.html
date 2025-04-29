@@ -9,6 +9,12 @@
       rel="stylesheet"
     />
     <style>
+      @font-face {
+        font-family: 'َAvinyFont';
+        src: url('/static/fonts/aviny.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
       * {
         margin: 0;
         padding: 0;
@@ -85,6 +91,8 @@
       }
 
       .news-box {
+        
+        font-family: 'َAvinyFont', sans-serif;
         height: 100px;
         background: linear-gradient(
           135deg,
@@ -165,7 +173,7 @@
 
       .search input::placeholder {
         /* Style the placeholder text */
-        color: #888; /* Set placeholder color to gray */
+        color: #ffffff; /* Set placeholder color to gray */
         font-weight: bolder;
       }
 
@@ -266,6 +274,11 @@
 
       .user-actions .red {
         background: #e74c3c; /* Red */
+        color: #ffffff;
+      }
+
+      .user-actions .gray {
+        background: #494949; /* Red */
         color: #ffffff;
       }
 
@@ -378,7 +391,6 @@
       @media (max-width: 400px) {
         .modal {
           max-width: 260px;
-          padding: 16px;
         }
         .modal-header {
           font-size: 14px;
@@ -482,6 +494,26 @@
       .qr-btn:hover {
         background-color: #7038b8; /* Darker Light Purple */
       }
+      .status-circle {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-right: 10px;
+      }
+      
+      .status-on {
+          background-color: #1f8bff;
+          box-shadow: 0 4px 15px rgba(30, 144, 255, 0.5);
+      }
+      
+      .status-off {
+          background-color: #808080;
+          box-shadow: 0 4px 15px rgba(128, 128, 128, 0.3);
+      }
     </style>
   </head>
   <body>
@@ -499,15 +531,15 @@
           </div>
         </div>
         <div class="section">
-          <div class="section-title">News</div>
+          <!-- <div class="section-title">News</div> -->
           <div class="news-box">{{data["new"]}}</div>
         </div>
         <div class="section">
-          <div class="section-title">Totals</div>
+          <!-- <div class="section-title">Totals</div> -->
           <div class="totals">
-            <div class="total">{{data["total"]}}</div>
-            <div class="online">{{data["online"]}}</div>
-            <div class="expired">{{data["expired"]}}</div>
+            <div class="total">All<br>{{data["total"]}}</div>
+            <div class="online">ON<br>{{data["online"]}}</div>
+            <div class="expired">END<br>{{data["expired"]}}</div>
           </div>
         </div>
       </div>
@@ -535,17 +567,30 @@
           <div class="user-list">
             {% for user in data["configs"] %}
             <div class="user-item">
-              <span class="user_name">{{user.username}}</span>
-              <div class="user-actions">
+              <span class="user_name">
+                
                 {% if user["status"] == "ON" %}
+                <div class="status-circle status-on" id="statusCircle"></div> 
+                {% else %}
+                <div class="status-circle status-off" id="statusCircle"></div> 
+                {% endif %} 
+                hello {{user.username}}</span>
+              <div class="user-actions">
+                <!-- {% if user["status"] == "ON" %}
                 <span class="status online">{{user["status"]}}</span>
                 {% else %}
                 <span class="status offline">{{user["status"]}}</span>
-                {% endif %} {% if user["traffic"] > 0 %}
+                {% endif %}  -->
+                {% if user["traffic"] > 59 %}
+                <span class="gray">{{user["traffic"]}}G</span>
+                {% elif user["traffic"] > 0 %}
                 <span class="green">{{user["traffic"]}}G</span>
                 {% else %}
                 <span class="red">{{user["traffic"]}}G</span>
-                {% endif %} {% if user["doration"] > 0 %}
+                {% endif %} 
+                {% if user["doration"] > 29 %}
+                <span class="gray">{{user["doration"]}}D</span>
+                {% elif user["doration"] > 0 %}
                 <span class="green">{{user["doration"]}}D</span>
                 {% else %}
                 <span class="red">{{user["doration"]}}D</span>
@@ -608,8 +653,8 @@
           <div class="modal-header">${head}</div>
           <div class="modal-content">
             <p><strong>Name :</strong> ${username}</p>
-            <p><strong>Time :</strong> 30 Days</p>
             <p><strong>Traffic :</strong> 60 GB</p>
+            <p><strong>Time :</strong> 30 Days</p>
             <p><strong>Price :</strong> -60,000 T</p>
           </div>
           <div class="modal-actions">
