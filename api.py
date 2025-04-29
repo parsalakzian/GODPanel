@@ -516,7 +516,7 @@ class SanaeiAPI():
         draw.text((text_x, text_y), name, font=font, fill="black")
     
         # ذخیره تصویر
-        output_path = os.path.join("static", "qrcodes", f'{uid}.png')
+        output_path = os.path.join("static", "qrcodes", f'{name}.png')
         final_img.save(output_path)
         return output_path
     

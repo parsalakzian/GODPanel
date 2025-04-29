@@ -459,7 +459,7 @@
         margin-top: 15px;
         border: none; /* Remove border */
         border-radius: 8px;
-        background-color: #48008e; /* Medium Dark Purple */
+        background-color: #808080; /* Medium Dark Purple */
         color: #e2e8f0; /* Lighter text */
         font-size: 14px;
         text-align: center;
@@ -574,7 +574,7 @@
                 {% else %}
                 <div class="status-circle status-off" id="statusCircle"></div> 
                 {% endif %} 
-                hello {{user.username}}</span>
+                {{user.username}}</span>
               <div class="user-actions">
                 <!-- {% if user["status"] == "ON" %}
                 <span class="status online">{{user["status"]}}</span>
@@ -758,7 +758,7 @@
               <div class="config_container">
                 <!-- White Box -->
                 <div class="white-box">
-                    <img src="/static/qrcodes/${config_id}.png" alt="QR CODE">
+                    <img src="/static/qrcodes/New ${username}.png" alt="QR CODE">
                 </div>
 
                 <!-- Input Field -->
@@ -767,9 +767,9 @@
                 <!-- Buttons -->
                 
                 <div class="modal-actionss">
-                  <button class="btn-no">NO</button>
+                  <button style="background-color:#8a4dd4" class="qr-btn">QR Code</button>
                   <button class="copy-btn">Copy</button>
-                  <button class="qr-btn">QR Code</button>
+                  <button style="background-color:#e74c3c" class="btn-no">NO</button>
                 </div>
               </div>
             `;
