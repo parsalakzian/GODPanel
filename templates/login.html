@@ -1,99 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login to GOD</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/thin/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/light/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/thin/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/light/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css"
+    />
     <style>
-        /* Reset some default styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      /* Reset some default styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Jura", Helvetica, sans-serif;
+        background-color: #240046; /* Darker Purple background */
+        color: #e2e8f0; /* Lighter text color */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .login-container {
+        background: linear-gradient(
+          160deg,
+          #5600ac,
+          #3c0078
+        ); /* Purple Gradient */
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        width: 300px;
+        text-align: center;
+      }
+
+      .login-container h1 {
+        color: white;
+        font-size: 2em; /* Title size */
+        margin-bottom: 20px; /* Space between title and inputs */
+      }
+
+      form label {
+        color: #ffffff;
+        display: block;
+        margin-bottom: 5px;
+        text-align: left;
+      }
+
+      form input {
+        width: 100%;
+        padding: 10px; /* Input padding */
+        margin-bottom: 15px; /* Space between inputs */
+        border: none;
+        border-radius: 5px;
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.1
+        ); /* Semi-transparent background */
+        color: white;
+        font-size: 16px;
+        height: 40px; /* Fixed height for inputs */
+      }
+
+      form button {
+        width: 100%;
+        padding: 10px; /* Button padding */
+        background-color: #00c853; /* Blue Accent */
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        height: 40px; /* Fixed height for button */
+      }
+
+      form button:hover {
+        background-color: #0056b3; /* Darker Blue */
+        transform: scale(1.05);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 600px) {
+        .login-container {
+          width: 90%; /* Adjust width for smaller screens */
         }
+      }
 
-body {
-    font-family: 'Jura', Helvetica, sans-serif;
-    background-color: #240046; /* Darker Purple background */
-    color: #e2e8f0; /* Lighter text color */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.login-container {
-    background: linear-gradient(160deg, #5600AC, #3c0078); /* Purple Gradient */
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 300px;
-    text-align: center;
-}
-
-        .login-container h1 {
-            color: white;
-            font-size: 2em; /* Title size */
-            margin-bottom: 20px; /* Space between title and inputs */
+      .popup {
+        background: linear-gradient(180deg, #2c003d, #1a002e);
+        border: 2px solid #6c4cff;
+        border-radius: 20px;
+        padding: 20px 20px 30px;
+        width: 70%; /* عرض کوچکتر */
+        max-width: 280px; /* حداکثر عرض کوچکتر */
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        text-align: center;
+        color: #fff;
+        animation: fadeIn 0.6s ease-out;
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.8);
         }
-
-        form label {
-            color: #ffffff;
-            display: block;
-            margin-bottom: 5px;
-            text-align: left;
+        100% {
+          opacity: 1;
+          transform: scale(1);
         }
+      }
+      .popup h2 {
+        font-size: 20px;
+        color: #00e1ff;
+        margin-bottom: 18px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .info-box {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
+        padding: 15px;
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .info-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin: 10px 0;
+        font-size: 14px;
+        color: #ddd;
+        padding-bottom: 6px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+        width: 100%;
+      }
+      .info-item:last-child {
+        border-bottom: none;
+      }
+      .info-item i {
+        color: #00e1ff;
+        margin-right: 8px;
+      }
+      .value {
+        font-weight: bold;
+        color: #fff;
+        flex-grow: 1;
+        text-align: right;
+      }
+      .btn-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      }
+      .btn.no {
+        background: #ff3d4f;
+        color: white;
+      }
+      .btn.no:hover {
+        background: #e53935;
+        transform: scale(1.05);
+      }
+      .btn.ok {
+        background: #00c853;
+        color: white;
+      }
+      .btn.ok:hover {
+        background: #00e676;
+        transform: scale(1.05);
+      }
 
-        form input {
-            width: 100%;
-            padding: 10px; /* Input padding */
-            margin-bottom: 15px; /* Space between inputs */
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
-            color: white;
-            font-size: 16px;
-            height: 40px; /* Fixed height for inputs */
+      /* Responsive Design for smaller screens */
+      @media (max-width: 600px) {
+        .popup {
+          padding: 16px 16px 28px;
+          width: 80%;
         }
-
-form button {
-    width: 100%;
-    padding: 10px; /* Button padding */
-    background-color: #007bff; /* Blue Accent */
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    height: 40px; /* Fixed height for button */
-}
-
-form button:hover {
-    background-color: #0056b3; /* Darker Blue */
-}
-
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            .login-container {
-                width: 90%; /* Adjust width for smaller screens */
-            }
+        .popup h2 {
+          font-size: 18px;
         }
+        .info-box {
+          padding: 12px;
+        }
+        .info-item {
+          font-size: 12px;
+        }
+        .btn {
+          font-size: 12px;
+        }
+      }
+
+      .input-icons {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .input-icons i {
+        position: absolute;
+      }
+
+      .icon {
+        padding: 10px;
+        color: fff;
+        min-width: 50px;
+        text-align: center;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+      }
     </style>
-</head>
-<body>
-    <div class="login-container">
-        <h1>GOD</h1>
-        <form action="#" method="post">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username">
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" >
-            {% if message %}
-                <label style="color: red; text-align: center;">{{message}}</label>
-            {% endif %} 
-            <button type="submit">Login</button>
-        </form>
+    <style>
+      :is(
+          [id*="google_ads_iframe"],
+          [id*="taboola-"],
+          .taboolaHeight,
+          .taboola-placeholder,
+          #top-ad,
+          #credential_picker_container,
+          #credentials-picker-container,
+          #credential_picker_iframe,
+          [id*="google-one-tap-iframe"],
+          #google-one-tap-popup-container,
+          .google-one-tap__module,
+          .google-one-tap-modal-div,
+          #amp_floatingAdDiv,
+          #ez-content-blocker-container
+        ) {
+        display: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+      }
+    </style>
+    <style>
+      :is(
+          [id*="google_ads_iframe"],
+          [id*="taboola-"],
+          .taboolaHeight,
+          .taboola-placeholder,
+          #top-ad,
+          #credential_picker_container,
+          #credentials-picker-container,
+          #credential_picker_iframe,
+          [id*="google-one-tap-iframe"],
+          #google-one-tap-popup-container,
+          .google-one-tap__module,
+          .google-one-tap-modal-div,
+          #amp_floatingAdDiv,
+          #ez-content-blocker-container
+        ) {
+        display: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+      }
+    </style>
+    <style>
+      :is(
+          [id*="google_ads_iframe"],
+          [id*="taboola-"],
+          .taboolaHeight,
+          .taboola-placeholder,
+          #top-ad,
+          #credential_picker_container,
+          #credentials-picker-container,
+          #credential_picker_iframe,
+          [id*="google-one-tap-iframe"],
+          #google-one-tap-popup-container,
+          .google-one-tap__module,
+          .google-one-tap-modal-div,
+          #amp_floatingAdDiv,
+          #ez-content-blocker-container
+        ) {
+        display: none !important;
+        min-height: 0 !important;
+        height: 0 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="popup">
+      <h2>GOD</h2>
+      <form action="#" method="post">
+        <div class="input-icons">
+          <i class="ph ph-user icon"></i>
+          <input
+            class="input-field"
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Username"
+          />
+        </div>
+
+        <div class="input-icons">
+          <i class="ph ph-lock icon"></i>
+          <input
+            class="input-field"
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Password"
+          />
+        </div>
+
+        <button type="submit">LOGIN</button>
+      </form>
     </div>
-</body>
+  </body>
 </html>

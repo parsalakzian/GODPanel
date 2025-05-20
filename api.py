@@ -577,7 +577,7 @@ class SanaeiAPI():
     def generate_pdf(self, data:list, filename="wallet_report"):
         try:
             # Add header row
-            header = ["Operation", "Operation Price", "Wallet Before", "Wallet After"]
+            header = ["EVENT", "DECREASE", "WALLET"]
             table_data = [header] + data
             
             # Set up PDF document
@@ -589,7 +589,7 @@ class SanaeiAPI():
             )
             
             # Create a Table
-            table = Table(table_data, colWidths=[120, 120, 120, 120, 120])
+            table = Table(table_data, colWidths=[120, 120, 120, 120])
 
             # Style the table
             style = TableStyle([

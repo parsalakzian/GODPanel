@@ -359,7 +359,7 @@ def add_admin_wallet():
                 new = db.get_admins_wallet(admin_id)
                 if new["status"] == False:
                     return new
-                res = db.add_report(admin_id, "Set Admin Wallet", price, new["data"]["wallet"], old["data"]["wallet"])
+                res = db.add_report(admin_id, "SEND", price, new["data"]["wallet"], old["data"]["wallet"])
                 if res["status"] == False:
                     return res
                 

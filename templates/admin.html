@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Jura&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     @font-face {
       font-family: 'َAvinyFont';
@@ -54,8 +55,6 @@
     }
 
     .header img {
-      width: 30px;
-      height: 30px;
       cursor: pointer;
     }
 
@@ -66,11 +65,6 @@
       background: #415c88;
       padding: 5px 10px;
       border-radius: 10px;
-    }
-
-    .wallet img {
-      width: 16px;
-      height: 16px;
     }
 
     .section {
@@ -86,7 +80,6 @@
     }
 
     .news-box {
-      font-family: 'َAvinyFont', sans-serif;
       height: 100px;
       background: linear-gradient(to bottom, #6a91e2, #1ea56c);
       padding: 10px;
@@ -125,8 +118,6 @@
     }
 
     .user-header .actions img {
-      width: 20px;
-      height: 20px;
       cursor: pointer;
     }
 
@@ -155,10 +146,6 @@
       font-weight: bolder;
     }
 
-    .search img {
-      width: 20px;
-      height: 20px;
-    }
 
     .user-list {
       height: 400px;
@@ -231,8 +218,6 @@
     }
 
     .server-actions img {
-      width: 20px;
-      height: 20px;
       cursor: pointer;
     }
 
@@ -258,8 +243,6 @@
     }
 
     .user-actions img {
-      width: 20px;
-      height: 20px;
       cursor: pointer;
     }
 
@@ -370,9 +353,11 @@
   }
 </style>
 <style>
+  .action-icon {
+    cursor: pointer;
+    font-size: 30px;
+  }
   .upload-icon {
-    font-size: 50px;
-    color: #007bff;
     cursor: pointer;
     display: inline;
   }
@@ -408,27 +393,17 @@
   <div class="container">
     <div class="right-panel">
       <div class="header">
-        <img
-          src="/static/icons/LogOut Icon.svg"
-          class="header-icon"
-          onclick="window.open('/logout', '_self')"
-        />
+        <i class="fa-solid fa-arrow-right-from-bracket header-icon action-icon" style="rotate: 180deg;" onclick="window.open('/logout', '_self')"></i>
         <div>
-          <label for="hiddenFileInput" class="upload-icon">
-            <img
-              src="/static/icons/Upload Icon.svg"
-              alt="Backup"
-            />
-          </label>
+        <label for="hiddenFileInput" class="upload-icon">
+          <i class="fa-solid fa-cloud-arrow-up action-icon"></i>
+        </label>
 
           <!-- فیلد انتخاب فایل (مخفی) -->
           <input type="file" id="hiddenFileInput" />
 
-          <img
-            src="/static/icons/Backup Icon.svg"
-            class="action-icon"
-            onclick="window.open('/download_backup', '_self')"
-          />
+
+          <i class="fa-regular fa-circle-down action-icon" onclick="window.open('/download_backup', '_self')"></i>
         </div>
       </div>
       <div class="section">
@@ -436,11 +411,7 @@
           <!-- <div class="section-title">News</div> -->
 
           <div class="actions">
-            <img
-              src="/static/icons/Plus Icon.svg"
-              class="action-icon"
-              onclick="new_news('/new_news')"
-            />
+            <i class="fa-regular fa-plus action-icon" onclick="new_news('/new_news')"></i>
           </div>
         </div>
         <div class="news-box">{{data.new}}</div>
@@ -456,11 +427,7 @@
             {% endif %}
 
             <div class="server-actions">
-              <img
-                src="/static/icons/Edit Icon.svg"
-                class="action-icon"
-                onclick="set_server('/set_server')"
-              />
+              <i class="fa-solid fa-pencil action-icon" style="font-size: 22px;" onclick="set_server('/set_server')"></i>
             </div>
           </div>
         </div>
@@ -471,11 +438,7 @@
         <div class="user-header">
           <!-- <div class="section-title">Admins</div> -->
           <div style="padding-right: 10px;" class="actions">
-            <img
-              src="/static/icons/Plus Icon.svg"
-              class="action-icon"
-              onclick="new_pop(`{{data.inbounds}}`, '/new_admin')"
-            />
+            <i class="fa-regular fa-plus action-icon" onclick="new_pop(`{{data.inbounds}}`, '/new_admin')"></i>
           </div>
         </div>
         <div class="search">
@@ -485,7 +448,7 @@
             placeholder="Search"
             oninput="filterUsers()"
           />
-          <img src="/static/icons/Search Icon.svg" class="search-icon" />
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
         </div>
 
         <div class="user-list">
@@ -502,23 +465,12 @@
               {% endif %}
               <!-- <span class="green">{{admin["total"]}}</span> -->
               
-              <img
-                src="/static/icons/Report Icon.svg"
-                class="action-icon"
-                onclick="report(`{{admin.admin_id}}`, '{{admin.username}}', '/get_admin_report')"
-              />
+              <i class="fa-solid fa-file-invoice action-icon" style="font-size: 24px;" onclick="report(`{{admin.admin_id}}`, '{{admin.username}}', '/get_admin_report')"></i>
               
-              <img
-                src="/static/icons/Edit Icon.svg"
-                class="action-icon"
-                onclick="edit_pop(`{{data.inbounds}}`, '{{admin.inbound_id}}', '{{admin.total}}', '{{admin.username}}', '{{admin.password}}', '/edit_admin')"
-              />
+              <i class="fa-solid fa-pencil action-icon" style="font-size: 24px;" onclick="edit_pop(`{{data.inbounds}}`, '{{admin.inbound_id}}', '{{admin.total}}', '{{admin.username}}', '{{admin.password}}', '/edit_admin')"></i>
+              
 
-              <img
-                src="/static/icons/Add Wallet Icon.svg"
-                class="action-icon"
-                onclick="add_admin_wallet('{{admin.admin_id}}', 'add', '/add_admin_wallet')"
-              />
+              <i class="fa-solid fa-file-circle-plus action-icon" style="font-size: 24px;" onclick="add_admin_wallet('{{admin.admin_id}}', 'add', '/add_admin_wallet')"></i>
 
               <!-- <img
                 src="/static/icons/Reduce Wallet Icon.svg"
