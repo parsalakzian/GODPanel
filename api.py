@@ -1,4 +1,5 @@
 import base64
+import math
 import uuid
 import requests
 import json
@@ -131,7 +132,7 @@ class SanaeiAPI():
             self.login()
             return self.add_client(inbound_id, username, traffic, doration)
         
-    def update_client(self, inbound_id, uid, username, traffic= 64424509440, doration= int(time.time())*1000 + 2592000000):
+    def update_client(self, inbound_id, uid, username, traffic= 64424509440, doration= int(time.time())*1000 + 2600000000):
         settings = "{\"clients\": [{\"id\": \""+uid+"\",\"flow\": \"\",\"email\": \""+username+"\",\"limitIp\": 0,\"totalGB\": "+str(traffic)+",\"expiryTime\": "+str(doration)+",\"enable\": true,\"tgId\": \"\",\"subId\": \"\",\"reset\": 0}]}"
         data = requests.post(
             url=self.url + self.pathes["update_client"].format(uid),
@@ -535,7 +536,7 @@ class SanaeiAPI():
                 for cl in clients:
                     if str(cl["id"]).startswith(prefix):
                         if cl["expiryTime"] > 0:
-                            ext = int((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24)
+                            ext = math.ceil(int((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24))
                         else:
                             ext = - int((cl["expiryTime"])/1000/60/60/24)
                             
