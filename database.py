@@ -412,7 +412,11 @@ class Database():
             conn.close()
             reports = []
             for i in data:
-                reports.append([i[1], i[2], i[3]])
+                if i[2] > 0:
+                    reports.append([i[1], f"+{i[2]:,}", f"{i[3]:,}"])
+                else:
+                    reports.append([i[1], f"{i[2]:,}", f"{i[3]:,}"])
+                    
             
             return {"status":True, "data":{"reports":reports}}
         except Exception as error:
