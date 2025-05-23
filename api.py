@@ -536,9 +536,11 @@ class SanaeiAPI():
                 for cl in clients:
                     if str(cl["id"]).startswith(prefix):
                         if cl["expiryTime"] > 0:
-                            ext = math.ceil(int((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24))
-                        else:
+                            ext = math.ceil(float((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24))
+                        elif cl["expiryTime"] == -2592000000:
                             ext = - int((cl["expiryTime"])/1000/60/60/24)
+                        else:
+                            ext = 0
                             
                         traf = self.get_client_traffic(cl["email"])
                         traff = 0
