@@ -535,13 +535,13 @@ class SanaeiAPI():
                 admin_clients = []
                 for cl in clients:
                     if str(cl["id"]).startswith(prefix):
-                        if cl["expiryTime"] > 0:
+                        if cl["expiryTime"] > 0 and float(cl["expiryTime"] - int(time.time()) * 1000) > 0:
                             ext = math.ceil(float((cl["expiryTime"] - int(time.time()) * 1000)/1000/60/60/24))
                         elif cl["expiryTime"] == -2592000000:
                             ext = 30
                         else:
                             ext = 0
-                            
+                        # print(ext)
                         traf = self.get_client_traffic(cl["email"])
                         traff = 0
                         if traf["status"]:
@@ -551,7 +551,7 @@ class SanaeiAPI():
                         
                         if cl["email"] in onlines:
                             online += 1
-                        if ext < 0:
+                        if ext == 0:
                             expiryes += 1
                             
                         admin_clients.append({
