@@ -618,8 +618,3 @@ class SanaeiAPI():
         except Exception as e:
             return {"status": False, "error": str(e)}
         
-                
-# sn = SanaeiAPI("GOD", "Man.69.MyXras", "http://www.x8ss0.com:443/oxoxo")
-# print(json.dumps(sn.update_client(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"), indent=4))
-# sn.create_qrcode("3ff0b0fe-15dd-11f0-a002-60dd8efd8828", sn.get_config(8, "3ff0b0fe-15dd-11f0-a002-60dd8efd8828", "test"))
-# print(sn.get_admin_clients(6, 5))
