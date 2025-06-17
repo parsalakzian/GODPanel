@@ -461,7 +461,7 @@ class SanaeiAPI():
             inbound = data["data"]
         else:
             return data["error"]
-        return self.GetConfig(inbound["streamSettings"], uid, username, inbound["port"], inbound["protocol"], self.server)
+        return self.GetConfig(inbound["streamSettings"], uid, username, inbound["port"], inbound["protocol"], "www.x8ss0.com")
     
     def download_font_if_needed(self, font_path):
         if not os.path.exists(font_path):
