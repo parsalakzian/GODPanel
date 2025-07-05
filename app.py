@@ -166,7 +166,7 @@ def renew():
                 sn = SanaeiAPI(server["username"], server["password"], server["url"])
                 
                 wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-                if wallet >= 60000:
+                if wallet >= 80000:
                 
                     d = sn.update_client(int(inbound_id), user_id, username)
                     if d["status"] == False:
@@ -178,13 +178,13 @@ def renew():
                     old = db.get_admins_wallet(session["UUID"])
                     if old["status"] == False:
                         return old
-                    dd = db.add_admin_wallet(session["UUID"], -60000)
+                    dd = db.add_admin_wallet(session["UUID"], -80000)
                     if dd["status"] == False:
                         return dd
                     new = db.get_admins_wallet(session["UUID"])
                     if new["status"] == False:
                         return new
-                    res = db.add_report(session["UUID"], f"Renew {username}", -60000, new["data"]["wallet"], old["data"]["wallet"])
+                    res = db.add_report(session["UUID"], f"Renew {username}", -80000, new["data"]["wallet"], old["data"]["wallet"])
                     if res["status"] == False:
                         return res
                     
@@ -216,7 +216,7 @@ def new():
                 sn = SanaeiAPI(server["username"], server["password"], server["url"])
                 
                 wallet = db.get_admins_wallet(session["UUID"])["data"]["wallet"]
-                if wallet >= 60000:
+                if wallet >= 80000:
                     inbound_id = int(db.get_admins_inbound_id(session["UUID"])["data"]["inbound_id"])
                     d = sn.add_client(inbound_id, username, session["UUID"])
                     if d["status"] ==False:
@@ -229,13 +229,13 @@ def new():
                     old = db.get_admins_wallet(session["UUID"])
                     if old["status"] == False:
                         return old
-                    dd = db.add_admin_wallet(session["UUID"], -60000)
+                    dd = db.add_admin_wallet(session["UUID"], -80000)
                     if dd["status"] == False:
                         return dd
                     new = db.get_admins_wallet(session["UUID"])
                     if new["status"] == False:
                         return new
-                    res = db.add_report(session["UUID"], f"New {username}", -60000, new["data"]["wallet"], old["data"]["wallet"])
+                    res = db.add_report(session["UUID"], f"New {username}", -80000, new["data"]["wallet"], old["data"]["wallet"])
                     if res["status"] == False:
                         return res
                     
